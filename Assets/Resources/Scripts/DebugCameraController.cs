@@ -27,13 +27,21 @@ public class DebugCameraController : MonoBehaviour {
 			velocity += Vector3.down;
 		}
 		if (Input.GetKey("i")) {
-			if (LevelManager.Level == 0) {
+			if (LevelManager.LevelNumber == 0) {
 				LevelManager.LoadLevel (1);
 			}
 		}
 		if (Input.GetKey("k")) {
-			if (LevelManager.Level == 1) {
+			if (LevelManager.LevelNumber == 1) {
 				LevelManager.LoadLevel (0);
+			}
+		}
+		if (Input.GetKey ("l")) {
+			foreach (GameObject lightSource in LevelManager.LevelStructure.LightMap['1']) {
+				Transform light = lightSource.transform.Find ("SpotLight");
+				if (light != null) {
+					light.gameObject.SetActive (!light.gameObject.activeSelf);
+				}						
 			}
 		}
 		velocity = velocity.normalized * Time.deltaTime * speed;

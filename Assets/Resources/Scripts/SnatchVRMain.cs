@@ -4,9 +4,7 @@ public class SnatchVRMain : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if (LevelManager.PlayerGameObject == null) {
-			LevelManager.PlayerGameObject = gameObject;
-			LevelManager.LoadLevel (0);
-		}
+		LevelManager.Initialize (gameObject, 2.0f);
+		LevelManager.LoadLevel (0);
 	}
 }

@@ -1,0 +1,32 @@
+﻿{
+	"Grid": [
+		"WWWWWWWWWWW",
+		"WWWWWGWWWWW",
+		"WWWWWFWWWWW",
+		"WFFFFFFFFFW",
+		"WFFFFFFFFFW",
+		"WFFFFFFFFFW",
+		"WFFFFFFFFFW",
+		"WFFFF^FFFFW",
+		"WFFFFFFFFFW",
+		"WFFFFFFFFFW",
+		"WFFFFFFFFFW",
+		"WFFFFFFFFFW",
+		"WWWWWWWWWWW"
+	],
+	"LightMap": [
+		"-----------",
+		"-----1-----",
+		"-----1-----",
+		"-111111111-",
+		"-111111111-",
+		"-111111111-",
+		"-111111111-",
+		"-111111111-",
+		"-111111111-",
+		"-111111111-",
+		"-111111111-",
+		"-111111111-",
+		"-----------"
+	]
+}
