@@ -2,7 +2,7 @@
 	"Grid": [
 		"WWWWWWWWWWW",
 		"WWWWWGWWWWW",
-		"WWWWWFWWWWW",
+		"WWWWWDWWWWW",
 		"WFFFFFFFFFW",
 		"WFFFFFFFFFW",
 		"WFFFFFFFFFW",
@@ -17,7 +17,7 @@
 	"LightMap": [
 		"-----------",
 		"-----1-----",
-		"-----1-----",
+		"-----------",
 		"-111111111-",
 		"-111111111-",
 		"-111111111-",

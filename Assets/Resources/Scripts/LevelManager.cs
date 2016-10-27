@@ -43,6 +43,8 @@ public static class LevelManager {
 
 				string assetPrefabPath = Utils.Path.Combine ("Prefabs");
 				string assetPath = null;
+				Quaternion doorRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
+
 				switch (column.value) {
 				case 'W':
 				// Wall
@@ -52,6 +54,19 @@ public static class LevelManager {
 					wall.transform.localScale *= LevelScale;
 					LevelStructure.AddToRow (i, wall);
 					break;
+				case 'd':
+				// Door left-right
+					doorRotation = Quaternion.Euler (0.0f, 90.0f, 0.0f);
+					goto case 'D';
+				case 'D':
+				// Door forward-backward
+					assetPath = Utils.Path.Combine (assetPrefabPath, "DoorTiles", "WoodenDoorTile");
+					GameObject door = MonoBehaviour.Instantiate (Resources.Load (assetPath)) as GameObject;
+					door.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
+					door.transform.rotation = doorRotation;
+					door.transform.localScale *= LevelScale;
+					LevelStructure.AddToRow (i, door);
+					goto case 'F';
 				case '^':
 				// Does not work with Google VR SDK
 				// Start Facing Forward
@@ -104,11 +119,11 @@ public static class LevelManager {
 					LevelStructure.AddToRow (i, floor);
 					break;
 				/*
+				case 'L':
+				// Light Switch
+					break;
 				case 'U':
 				// Door Unlock Switch
-					break;
-				case 'D':
-				// Door
 					break;
 				case 'E':
 				// Enemy
