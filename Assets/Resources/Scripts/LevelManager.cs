@@ -65,7 +65,7 @@ public static class LevelManager {
 					door.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
 					door.transform.rotation = doorRotation;
 					door.transform.localScale *= LevelScale;
-					LevelStructure.AddToRow (i, door);
+					LevelStructure.LevelEnvironmentObjects.Add (door);
 					goto case 'F';
 				case '^':
 				// Does not work with Google VR SDK
@@ -139,8 +139,6 @@ public static class LevelManager {
 		i = 0;
 		foreach (var row in levelDesign["LightMap"].AsArray) {
 
-			int rowIndex = (levelDesign ["LightMap"].Count - 1) - i;
-
 			foreach (var column in row.ToString().Trim('"').ToCharArray().Select((value, index) => new {value, index})) {
 				if (column.value == '-') {
 					continue;
@@ -148,7 +146,9 @@ public static class LevelManager {
 				if (!LevelStructure.LightMap.ContainsKey (column.value)) {
 					LevelStructure.LightMap [column.value] = new ArrayList ();
 				}
-				LevelStructure.LightMap [column.value].Add ((LevelStructure.LevelGrid [i] as ArrayList) [column.index]);
+				var spaceTile = (LevelStructure.LevelGrid [i] as ArrayList) [column.index];
+				(spaceTile as GameObject).SendMessage ("SetMapKey", column.value);
+				LevelStructure.LightMap [column.value].Add (spaceTile);
 			}
 			i++;
 		}

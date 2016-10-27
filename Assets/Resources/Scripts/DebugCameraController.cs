@@ -39,10 +39,23 @@ public class DebugCameraController : MonoBehaviour {
 		if (Input.GetKey ("l")) {
 			if (LevelManager.LevelStructure.LightMap.ContainsKey ('1')) {
 				foreach (GameObject lightSource in LevelManager.LevelStructure.LightMap['1']) {
-					Transform light = lightSource.transform.Find ("SpotLight");
-					if (light != null) {
-						light.gameObject.SetActive (!light.gameObject.activeSelf);
-					}						
+					lightSource.SendMessage ("ToggleLight");
+				}
+			}
+		}
+		if (Input.GetKey ("o")) {
+			SpaceTile[] spaceTiles = FindObjectsOfType<SpaceTile> ();
+			foreach (SpaceTile spaceTile in spaceTiles) {
+				if (spaceTile.MapKey == '1') {
+					spaceTile.SetLightActive(true);
+				}
+			}
+		}
+		if (Input.GetKey ("p")) {
+			SpaceTile[] spaceTiles = FindObjectsOfType<SpaceTile> ();
+			foreach (SpaceTile spaceTile in spaceTiles) {
+				if (spaceTile.MapKey == '1') {
+					spaceTile.SetLightActive(false);
 				}
 			}
 		}
