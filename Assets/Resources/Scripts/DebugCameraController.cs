@@ -37,11 +37,13 @@ public class DebugCameraController : MonoBehaviour {
 			}
 		}
 		if (Input.GetKey ("l")) {
-			foreach (GameObject lightSource in LevelManager.LevelStructure.LightMap['1']) {
-				Transform light = lightSource.transform.Find ("SpotLight");
-				if (light != null) {
-					light.gameObject.SetActive (!light.gameObject.activeSelf);
-				}						
+			if (LevelManager.LevelStructure.LightMap.ContainsKey ('1')) {
+				foreach (GameObject lightSource in LevelManager.LevelStructure.LightMap['1']) {
+					Transform light = lightSource.transform.Find ("SpotLight");
+					if (light != null) {
+						light.gameObject.SetActive (!light.gameObject.activeSelf);
+					}						
+				}
 			}
 		}
 		velocity = velocity.normalized * Time.deltaTime * speed;
