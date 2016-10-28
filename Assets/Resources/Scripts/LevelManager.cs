@@ -99,6 +99,7 @@ public static class LevelManager {
 				// Start
 					if (!playerStartSpace) {
 						PlayerGameObject.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
+						PlayerGameObject.SendMessage ("MoveTo", new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale));
 						playerStartSpace = true;
 					}
 					goto case 'F';
