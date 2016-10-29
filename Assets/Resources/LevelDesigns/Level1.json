@@ -5,7 +5,7 @@
 		"WFWWFWFWFWWW",
 		"WFFFFWFWFFFW",
 		"WWWWFWFWFWWW",
-		"WFFWFFFFFFFW",
+		"WFFWFFFdFFFW",
 		"WFWWWWWWDWWW",
 		"WFFFFFFdFFFW",
 		"WFFFFWFWWFWW",
@@ -13,7 +13,7 @@
 		"W^FWFWFWWWFW",
 		"WWWWWWWWWWWW"
 	],
-	"LightMap": [
+	"LightSourceMap": [
 		"------------",
 		"-3333-33334-",
 		"-3--3-3-3---",
@@ -27,17 +27,35 @@
 		"-11-1-1---2-",
 		"------------"
 	],
+	"LightSwitches": [
+		{
+			"LightSource": "1",
+			"Position": {
+				"X": 2,
+				"Y": 6
+			}
+			"Yaw": -90
+		},
+		{
+			"LightSource": "2",
+			"Position": {
+				"X": 10,
+				"Y": 4
+			}
+			"Yaw": -90
+		},
+		{
+			"LightSource": "3",
+			"Position": {
+				"X": 10,
+				"Y": 8
+			}
+			"Yaw": -90
+		}
+	]
 	"nil": "
-	map[6][0] = C_LOCK_1;
-	map[10][0] = C_LOCK_1;
-	map[7][4] = C_DOOR_2;
-	map[11][4] = C_LIGHT_4;
-	map[8][5] = C_DOOR_1;
-	map[2][6] = C_LIGHT_4;
-	map[7][6] = C_DOOR_2;
-	map[11][8] = C_LIGHT_4;
-	map[0][10] = C_LOCK_2;
-	map[5][10] = C_WALL;
-	map[9][10] = C_DOOR_2;
+		map[6][0] = C_LOCK_1;
+		map[10][0] = C_LOCK_1;
+		map[0][10] = C_LOCK_2;
 	"
 }

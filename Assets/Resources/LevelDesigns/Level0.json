@@ -14,7 +14,7 @@
 		"WFFFFFFFFFW",
 		"WWWWWWWWWWW"
 	],
-	"LightMap": [
+	"LightSourceMap": [
 		"-----------",
 		"-----1-----",
 		"-----1-----",
@@ -28,5 +28,15 @@
 		"-111111111-",
 		"-111111111-",
 		"-----------"
+	],
+	"LightSwitches": [
+		{
+			"LightSource": "1",
+			"Position": {
+				"X": 1,
+				"Y": 5
+			}
+			"Yaw": 90
+		}
 	]
 }

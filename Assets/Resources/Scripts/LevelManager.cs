@@ -60,7 +60,7 @@ public static class LevelManager {
 					goto case 'D';
 				case 'D':
 				// Door forward-backward
-					assetPath = Utils.Path.Combine (assetPrefabPath, "DoorTiles", "WoodenDoorTile");
+					assetPath = Utils.Path.Combine (assetPrefabPath, "Doors", "WoodenDoor");
 					GameObject door = MonoBehaviour.Instantiate (Resources.Load (assetPath)) as GameObject;
 					door.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
 					door.transform.rotation = doorRotation;
@@ -120,9 +120,6 @@ public static class LevelManager {
 					LevelStructure.AddToRow (i, floor);
 					break;
 				/*
-				case 'L':
-				// Light Switch
-					break;
 				case 'U':
 				// Door Unlock Switch
 					break;
@@ -138,21 +135,32 @@ public static class LevelManager {
 		}
 
 		i = 0;
-		foreach (var row in levelDesign["LightMap"].AsArray) {
+		foreach (var row in levelDesign["LightSourceMap"].AsArray) {
 
 			foreach (var column in row.ToString().Trim('"').ToCharArray().Select((value, index) => new {value, index})) {
 				if (column.value == '-') {
 					continue;
 				}
-				if (!LevelStructure.LightMap.ContainsKey (column.value)) {
-					LevelStructure.LightMap [column.value] = new ArrayList ();
+				if (!LevelStructure.LightSourceMap.ContainsKey (column.value)) {
+					LevelStructure.LightSourceMap [column.value] = new ArrayList ();
 				}
 				var spaceTile = (LevelStructure.LevelGrid [i] as ArrayList) [column.index];
-				(spaceTile as GameObject).SendMessage ("SetMapKey", column.value);
-				LevelStructure.LightMap [column.value].Add (spaceTile);
+				(spaceTile as GameObject).SendMessage ("SetLightSource", column.value);
+				LevelStructure.LightSourceMap [column.value].Add (spaceTile);
 			}
 			i++;
 		}
+
+		foreach (JSONNode lightSwitch in levelDesign["LightSwitches"].AsArray) {
+
+			string assetPath = Utils.Path.Combine ("Prefabs", "Switches", "LightSwitch");
+			GameObject light = MonoBehaviour.Instantiate (Resources.Load (assetPath)) as GameObject;
+			light.transform.position = new Vector3 (lightSwitch["Position"]["X"].AsFloat * LevelScale, 0.0f, lightSwitch["Position"]["Y"].AsFloat * LevelScale);
+			light.transform.rotation = Quaternion.Euler (0.0f, lightSwitch ["Yaw"].AsFloat, 0.0f);
+			light.transform.localScale *= LevelScale;
+			LevelStructure.LevelEnvironmentObjects.Add (light);
+		}
+
 		if (!playerStartSpace) {
 			Debug.LogException (new System.Exception ("No player start position."));
 			Application.Quit ();

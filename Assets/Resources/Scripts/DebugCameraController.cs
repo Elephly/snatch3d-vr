@@ -37,8 +37,8 @@ public class DebugCameraController : MonoBehaviour {
 			}
 		}
 		if (Input.GetKey ("l")) {
-			if (LevelManager.LevelStructure.LightMap.ContainsKey ('1')) {
-				foreach (GameObject lightSource in LevelManager.LevelStructure.LightMap['1']) {
+			if (LevelManager.LevelStructure.LightSourceMap.ContainsKey ('1')) {
+				foreach (GameObject lightSource in LevelManager.LevelStructure.LightSourceMap['1']) {
 					lightSource.SendMessage ("ToggleLight");
 				}
 			}
@@ -46,7 +46,7 @@ public class DebugCameraController : MonoBehaviour {
 		if (Input.GetKey ("o")) {
 			SpaceTile[] spaceTiles = FindObjectsOfType<SpaceTile> ();
 			foreach (SpaceTile spaceTile in spaceTiles) {
-				if (spaceTile.MapKey == '1') {
+				if (spaceTile.LightSource == '1') {
 					spaceTile.SetLightActive(true);
 				}
 			}
@@ -54,7 +54,7 @@ public class DebugCameraController : MonoBehaviour {
 		if (Input.GetKey ("p")) {
 			SpaceTile[] spaceTiles = FindObjectsOfType<SpaceTile> ();
 			foreach (SpaceTile spaceTile in spaceTiles) {
-				if (spaceTile.MapKey == '1') {
+				if (spaceTile.LightSource == '1') {
 					spaceTile.SetLightActive(false);
 				}
 			}

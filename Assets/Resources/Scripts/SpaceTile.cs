@@ -7,7 +7,7 @@ public class SpaceTile : MonoBehaviour, IGvrGazeResponder {
 	GameObject FloorTile = null;
 	GameObject SpotLight = null;
 
-	public char MapKey { get; private set; }
+	public char LightSource { get; private set; }
 	public bool IsLightActive {
 		get {
 			return SpotLight.activeSelf;
@@ -29,8 +29,8 @@ public class SpaceTile : MonoBehaviour, IGvrGazeResponder {
 		}
 	}
 
-	public void SetMapKey(char key) {
-		MapKey = key;
+	public void SetLightSource(char key) {
+		LightSource = key;
 	}
 
 	public void SetLightActive(bool state) {

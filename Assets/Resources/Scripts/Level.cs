@@ -6,12 +6,14 @@ public class Level {
 
 	public ArrayList LevelGrid { get; private set; }
 	public ArrayList LevelEnvironmentObjects { get; set; }
-	public Dictionary<char, ArrayList> LightMap { get; set; }
+
+	// Weak references
+	public Dictionary<char, ArrayList> LightSourceMap { get; set; }
 
 	public Level ()	{
 		LevelGrid = new ArrayList ();
 		LevelEnvironmentObjects = new ArrayList ();
-		LightMap = new Dictionary<char, ArrayList> ();
+		LightSourceMap = new Dictionary<char, ArrayList> ();
 	}
 
 	public void Destroy() {
@@ -28,7 +30,8 @@ public class Level {
 			MonoBehaviour.Destroy (obj);
 		}
 		LevelEnvironmentObjects.Clear ();
-		LightMap.Clear ();
+
+		LightSourceMap.Clear ();
 	}
 
 	public int AddRow(ArrayList row) {
