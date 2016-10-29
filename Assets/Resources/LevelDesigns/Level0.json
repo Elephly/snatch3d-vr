@@ -33,10 +33,10 @@
 		{
 			"LightSource": "1",
 			"Position": {
-				"X": 1,
+				"X": 9,
 				"Y": 5
 			}
-			"Yaw": 90
+			"Yaw": -90
 		}
 	]
 }

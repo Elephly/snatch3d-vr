@@ -37,27 +37,13 @@ public class DebugCameraController : MonoBehaviour {
 			}
 		}
 		if (Input.GetKey ("l")) {
-			if (LevelManager.LevelStructure.LightSourceMap.ContainsKey ('1')) {
-				foreach (GameObject lightSource in LevelManager.LevelStructure.LightSourceMap['1']) {
-					lightSource.SendMessage ("ToggleLight");
-				}
-			}
+			LevelManager.LevelStructure.ToggleLight ('1');
 		}
 		if (Input.GetKey ("o")) {
-			SpaceTile[] spaceTiles = FindObjectsOfType<SpaceTile> ();
-			foreach (SpaceTile spaceTile in spaceTiles) {
-				if (spaceTile.LightSource == '1') {
-					spaceTile.SetLightActive(true);
-				}
-			}
+			LevelManager.LevelStructure.SetLightActive ('1', true);
 		}
 		if (Input.GetKey ("p")) {
-			SpaceTile[] spaceTiles = FindObjectsOfType<SpaceTile> ();
-			foreach (SpaceTile spaceTile in spaceTiles) {
-				if (spaceTile.LightSource == '1') {
-					spaceTile.SetLightActive(false);
-				}
-			}
+			LevelManager.LevelStructure.SetLightActive ('1', false);
 		}
 		velocity = velocity.normalized * Time.deltaTime * speed;
 		transform.Translate (velocity);

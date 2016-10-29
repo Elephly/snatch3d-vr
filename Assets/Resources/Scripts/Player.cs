@@ -3,7 +3,7 @@
 public class Player : MonoBehaviour {
 
 	Vector3 Destination = Vector3.zero;
-	float Speed = 2.0f;
+	float Speed = 3.0f;
 	Vector3 Velocity = Vector3.zero;
 
 	void Start () {
@@ -12,7 +12,6 @@ public class Player : MonoBehaviour {
 	}
 
 	void Update() {
-		/*
 		Velocity = (Destination - transform.position).normalized * Speed * Time.deltaTime;
 		if (transform.position != Destination) {
 			if ((Destination - transform.position).sqrMagnitude <= Velocity.sqrMagnitude) {
@@ -21,7 +20,6 @@ public class Player : MonoBehaviour {
 				transform.position += Velocity;
 			}
 		}
-		*/
 	}
 
 	public void MoveTo(Vector3 destination) {

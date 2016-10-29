@@ -43,4 +43,22 @@ public class Level {
 
 		return (LevelGrid [row] as ArrayList).Add (value);
 	}
+
+	public void SetLightActive(char lightSource, bool state) {
+
+		if (LightSourceMap.ContainsKey (lightSource)) {
+			foreach (GameObject light in LightSourceMap[lightSource]) {
+				light.SendMessage ("SetLightActive", state);
+			}
+		}
+	}
+
+	public void ToggleLight(char lightSource) {
+
+		if (LightSourceMap.ContainsKey (lightSource)) {
+			foreach (GameObject light in LightSourceMap[lightSource]) {
+				light.SendMessage ("ToggleLight");
+			}
+		}
+	}
 }

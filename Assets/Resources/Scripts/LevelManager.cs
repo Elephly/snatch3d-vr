@@ -155,9 +155,10 @@ public static class LevelManager {
 
 			string assetPath = Utils.Path.Combine ("Prefabs", "Switches", "LightSwitch");
 			GameObject light = MonoBehaviour.Instantiate (Resources.Load (assetPath)) as GameObject;
-			light.transform.position = new Vector3 (lightSwitch["Position"]["X"].AsFloat * LevelScale, 0.0f, lightSwitch["Position"]["Y"].AsFloat * LevelScale);
+			light.transform.position = new Vector3 (lightSwitch ["Position"] ["X"].AsFloat * LevelScale, 0.0f, lightSwitch ["Position"] ["Y"].AsFloat * LevelScale);
 			light.transform.rotation = Quaternion.Euler (0.0f, lightSwitch ["Yaw"].AsFloat, 0.0f);
 			light.transform.localScale *= LevelScale;
+			light.SendMessage ("SetLightSource", lightSwitch ["LightSource"].ToString().Trim('"').ToCharArray()[0]);
 			LevelStructure.LevelEnvironmentObjects.Add (light);
 		}
 

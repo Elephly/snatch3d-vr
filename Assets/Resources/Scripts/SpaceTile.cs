@@ -29,8 +29,8 @@ public class SpaceTile : MonoBehaviour, IGvrGazeResponder {
 		}
 	}
 
-	public void SetLightSource(char key) {
-		LightSource = key;
+	public void SetLightSource(char lightSource) {
+		LightSource = lightSource;
 	}
 
 	public void SetLightActive(bool state) {
