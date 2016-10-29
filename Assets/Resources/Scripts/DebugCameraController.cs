@@ -37,13 +37,13 @@ public class DebugCameraController : MonoBehaviour {
 			}
 		}
 		if (Input.GetKey ("l")) {
-			LevelManager.LevelStructure.ToggleLight ('1');
+			LevelManager.CurrentLevel.ToggleLight ('1');
 		}
 		if (Input.GetKey ("o")) {
-			LevelManager.LevelStructure.SetLightActive ('1', true);
+			LevelManager.CurrentLevel.SetLightActive ('1', true);
 		}
 		if (Input.GetKey ("p")) {
-			LevelManager.LevelStructure.SetLightActive ('1', false);
+			LevelManager.CurrentLevel.SetLightActive ('1', false);
 		}
 		velocity = velocity.normalized * Time.deltaTime * speed;
 		transform.Translate (velocity);

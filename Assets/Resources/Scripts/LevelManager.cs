@@ -10,49 +10,56 @@ public static class LevelManager {
 	public static GameObject PlayerGameObject { get; private set; }
 	public static int LevelNumber { get; private set; }
 	public static float LevelScale { get; private set; }
-	public static Level LevelStructure { get; private set; }
+	public static Level CurrentLevel { get; private set; }
 
 	public static void Initialize(GameObject playerGameObject, float levelScale) {
 		if (PlayerGameObject == null) {
 			PlayerGameObject = playerGameObject;
 			LevelScale = levelScale;
 			LevelNumber = 0;
-			LevelStructure = new Level ();
+			CurrentLevel = new Level ();
 		}
 	}
-
 
 	public static void LoadLevel(int level) {
 		LevelNumber = level;
 		/* Path.Combine with string array parameter is unsupported for some reason on Mac OS X */
 		//string levelDesignPath = Path.Combine ("Assets", "Snatch-VR", "LevelDesigns", "Level" + level + ".level");
 		/* Using custom Path.Combine workaround */
-		string levelDesignPath = Utils.Path.Combine ("Assets", "Resources", "LevelDesigns", "Level" + level + ".json");
-		JSONNode levelDesign = JSON.Parse (File.ReadAllText (levelDesignPath));
+		string levelDesignPath = Utils.Path.Combine ("LevelDesigns", "Level" + level);
+		TextAsset levelJSON = Resources.Load<TextAsset> (levelDesignPath);
+		if (levelJSON == null) {
+			if (level != 0) {
+				LoadLevel (0);
+			}
+			return;
+		}
+		JSONNode levelDesign = JSON.Parse (levelJSON.text);
 		bool playerStartSpace = false;
 
-		LevelStructure.Destroy ();
+		CurrentLevel.Destroy ();
 
 		int i = 0;
 		foreach (var row in levelDesign["Grid"].AsArray) {
 
 			int rowIndex = (levelDesign["Grid"].Count - 1) - i;
-			LevelStructure.AddRow (new ArrayList ());
+			CurrentLevel.AddRow (new ArrayList ());
 
 			foreach (var column in row.ToString().Trim('"').ToCharArray().Select((value, index) => new {value, index})) {
 
 				string assetPrefabPath = Utils.Path.Combine ("Prefabs");
 				string assetPath = null;
 				Quaternion doorRotation = Quaternion.Euler (0.0f, 0.0f, 0.0f);
+				Vector3 rowColumnPosition = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
 
 				switch (column.value) {
 				case 'W':
 				// Wall
 					assetPath = Utils.Path.Combine (assetPrefabPath, "WallTiles", "BrickWallTile");
 					GameObject wall = MonoBehaviour.Instantiate (Resources.Load (assetPath)) as GameObject;
-					wall.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
+					wall.transform.position = rowColumnPosition;
 					wall.transform.localScale *= LevelScale;
-					LevelStructure.AddToRow (i, wall);
+					CurrentLevel.AddToRow (i, wall);
 					break;
 				case 'd':
 				// Door left-right
@@ -62,10 +69,10 @@ public static class LevelManager {
 				// Door forward-backward
 					assetPath = Utils.Path.Combine (assetPrefabPath, "Doors", "WoodenDoor");
 					GameObject door = MonoBehaviour.Instantiate (Resources.Load (assetPath)) as GameObject;
-					door.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
+					door.transform.position = rowColumnPosition;
 					door.transform.rotation = doorRotation;
 					door.transform.localScale *= LevelScale;
-					LevelStructure.LevelEnvironmentObjects.Add (door);
+					CurrentLevel.LevelEnvironmentObjects.Add (door);
 					goto case 'F';
 				case '^':
 				// Does not work with Google VR SDK
@@ -98,8 +105,8 @@ public static class LevelManager {
 				case 'S':
 				// Start
 					if (!playerStartSpace) {
-						PlayerGameObject.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
-						PlayerGameObject.SendMessage ("MoveTo", new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale));
+						PlayerGameObject.transform.position = rowColumnPosition;
+						PlayerGameObject.SendMessage ("MoveTo", rowColumnPosition);
 						playerStartSpace = true;
 					}
 					goto case 'F';
@@ -107,17 +114,18 @@ public static class LevelManager {
 					// Goal
 					assetPath = Utils.Path.Combine (assetPrefabPath, "Effects", "GoalSpaceTileEffect");
 					GameObject goal = MonoBehaviour.Instantiate (Resources.Load (assetPath)) as GameObject;
-					goal.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
+					goal.transform.position = rowColumnPosition;
 					goal.transform.localScale *= LevelScale;
-					LevelStructure.LevelEnvironmentObjects.Add (goal);
+					CurrentLevel.LevelEnvironmentObjects.Add (goal);
+					CurrentLevel.GoalLocation = rowColumnPosition;
 					goto case 'F';
 				case 'F':
 				// Floor
 					assetPath = Utils.Path.Combine (assetPrefabPath, "SpaceTiles", "ConcreteFloorTiledCeilingSpaceTile");
 					GameObject floor = MonoBehaviour.Instantiate (Resources.Load (assetPath)) as GameObject;
-					floor.transform.position = new Vector3 (column.index * LevelScale, 0.0f, rowIndex * LevelScale);
+					floor.transform.position = rowColumnPosition;
 					floor.transform.localScale *= LevelScale;
-					LevelStructure.AddToRow (i, floor);
+					CurrentLevel.AddToRow (i, floor);
 					break;
 				/*
 				case 'U':
@@ -141,12 +149,12 @@ public static class LevelManager {
 				if (column.value == '-') {
 					continue;
 				}
-				if (!LevelStructure.LightSourceMap.ContainsKey (column.value)) {
-					LevelStructure.LightSourceMap [column.value] = new ArrayList ();
+				if (!CurrentLevel.LightSourceMap.ContainsKey (column.value)) {
+					CurrentLevel.LightSourceMap [column.value] = new ArrayList ();
 				}
-				var spaceTile = (LevelStructure.LevelGrid [i] as ArrayList) [column.index];
+				var spaceTile = (CurrentLevel.LevelGrid [i] as ArrayList) [column.index];
 				(spaceTile as GameObject).SendMessage ("SetLightSource", column.value);
-				LevelStructure.LightSourceMap [column.value].Add (spaceTile);
+				CurrentLevel.LightSourceMap [column.value].Add (spaceTile);
 			}
 			i++;
 		}
@@ -159,13 +167,17 @@ public static class LevelManager {
 			light.transform.rotation = Quaternion.Euler (0.0f, lightSwitch ["Yaw"].AsFloat, 0.0f);
 			light.transform.localScale *= LevelScale;
 			light.SendMessage ("SetLightSource", lightSwitch ["LightSource"].ToString().Trim('"').ToCharArray()[0]);
-			LevelStructure.LevelEnvironmentObjects.Add (light);
+			CurrentLevel.LevelEnvironmentObjects.Add (light);
 		}
 
 		if (!playerStartSpace) {
 			Debug.LogException (new System.Exception ("No player start position."));
 			Application.Quit ();
 		}
+	}
+
+	public static void LoadNextLevel() {
+		LoadLevel (LevelNumber + 1);
 	}
 }
 

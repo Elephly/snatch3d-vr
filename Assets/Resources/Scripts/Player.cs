@@ -22,6 +22,10 @@ public class Player : MonoBehaviour {
 			}
 		}
 		//*/
+
+		if ((transform.position - LevelManager.CurrentLevel.GoalLocation).sqrMagnitude < 0.5f) {
+			LevelManager.LoadNextLevel ();
+		}
 	}
 
 	public void MoveTo(Vector3 destination) {

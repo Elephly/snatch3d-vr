@@ -6,6 +6,7 @@ public class Level {
 
 	public ArrayList LevelGrid { get; private set; }
 	public ArrayList LevelEnvironmentObjects { get; set; }
+	public Vector3 GoalLocation { get; set; }
 
 	// Weak references
 	public Dictionary<char, ArrayList> LightSourceMap { get; set; }

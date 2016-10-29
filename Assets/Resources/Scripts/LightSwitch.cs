@@ -32,10 +32,10 @@ public class LightSwitch : MonoBehaviour, IGvrGazeResponder {
 		if ((Camera.main.transform.position - transform.position).sqrMagnitude <= 4.0f) {
 			if (IsLightActive) {
 				animator.Play ("LightSwitchOffAnimation");
-				LevelManager.LevelStructure.SetLightActive (LightSource, false);
+				LevelManager.CurrentLevel.SetLightActive (LightSource, false);
 			} else {
 				animator.Play ("LightSwitchOnAnimation");
-				LevelManager.LevelStructure.SetLightActive (LightSource, true);
+				LevelManager.CurrentLevel.SetLightActive (LightSource, true);
 			}
 		}
 	}
