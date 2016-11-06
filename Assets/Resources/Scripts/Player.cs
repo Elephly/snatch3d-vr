@@ -1,34 +1,50 @@
 ﻿using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
 
 	Vector3 Destination = Vector3.zero;
+	GameObject Target = null;
 	float Speed = 3.0f;
 	Vector3 Velocity = Vector3.zero;
 
-	void Start () {
-		LevelManager.Initialize (gameObject, 2.0f);
-		LevelManager.LoadLevel (0);
+	void Start()
+	{
+		LevelManager.Initialize(gameObject, 2.0f);
+		LevelManager.LoadLevel(0);
 	}
 
-	void Update() {
-		//*
+	void Update()
+	{
 		Velocity = (Destination - transform.position).normalized * Speed * Time.deltaTime;
-		if (transform.position != Destination) {
-			if ((Destination - transform.position).sqrMagnitude <= Velocity.sqrMagnitude) {
+		if (transform.position != Destination)
+		{
+			if ((Destination - transform.position).sqrMagnitude <= Velocity.sqrMagnitude)
+			{
 				transform.position = Destination;
-			} else {
+			}
+			else {
 				transform.position += Velocity;
 			}
 		}
-		//*/
+		else
+		{
+			if (Target != null)
+			{
+				Target.SendMessage("Interact");
+				Target = null;
+			}
+		}
 
-		if ((transform.position - LevelManager.CurrentLevel.GoalLocation).sqrMagnitude < 0.5f) {
-			LevelManager.LoadNextLevel ();
+		if ((transform.position - LevelManager.CurrentLevel.GoalLocation).sqrMagnitude < 0.5f)
+		{
+			LevelManager.LoadNextLevel();
 		}
 	}
 
-	public void MoveTo(Vector3 destination) {
-		Destination = destination;
+	public void SetDestinationTarget(DestinationTarget destinationTarget)
+	{
+		Destination = destinationTarget.Destination;
+		Target = destinationTarget.Target;
 	}
 }

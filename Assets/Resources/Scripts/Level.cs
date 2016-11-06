@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Level {
+public class Level
+{
 
 	public ArrayList LevelGrid { get; private set; }
 	public ArrayList LevelEnvironmentObjects { get; set; }
@@ -10,55 +11,77 @@ public class Level {
 
 	// Weak references
 	public Dictionary<char, ArrayList> LightSourceMap { get; set; }
+	public Dictionary<Vector3, Obstruction> ObstructionMap { get; set; }
 
-	public Level ()	{
-		LevelGrid = new ArrayList ();
-		LevelEnvironmentObjects = new ArrayList ();
-		LightSourceMap = new Dictionary<char, ArrayList> ();
+	public Level()
+	{
+		LevelGrid = new ArrayList();
+		LevelEnvironmentObjects = new ArrayList();
+		LightSourceMap = new Dictionary<char, ArrayList>();
+		ObstructionMap = new Dictionary<Vector3, Obstruction>();
 	}
 
-	public void Destroy() {
-		
-		foreach (ArrayList row in LevelGrid) {
-			foreach (Object obj in row) {
-				MonoBehaviour.Destroy (obj);
+	public void Destroy()
+	{
+
+		foreach (ArrayList row in LevelGrid)
+		{
+			foreach (Object obj in row)
+			{
+				MonoBehaviour.Destroy(obj);
 			}
-			row.Clear ();
+			row.Clear();
 		}
-		LevelGrid.Clear ();
+		LevelGrid.Clear();
 
-		foreach (Object obj in LevelEnvironmentObjects) {
-			MonoBehaviour.Destroy (obj);
+		foreach (Object obj in LevelEnvironmentObjects)
+		{
+			MonoBehaviour.Destroy(obj);
 		}
-		LevelEnvironmentObjects.Clear ();
+		LevelEnvironmentObjects.Clear();
 
-		LightSourceMap.Clear ();
+		LightSourceMap.Clear();
+
+		ObstructionMap.Clear();
 	}
 
-	public int AddRow(ArrayList row) {
+	public int AddRow(ArrayList row)
+	{
 
-		return LevelGrid.Add (row);
+		return LevelGrid.Add(row);
 	}
 
-	public int AddToRow(int row, object value) {
+	public int AddToRow(int row, object value)
+	{
 
-		return (LevelGrid [row] as ArrayList).Add (value);
+		return (LevelGrid[row] as ArrayList).Add(value);
 	}
 
-	public void SetLightActive(char lightSource, bool state) {
+	public bool HasObstruction(Vector3 position)
+	{
+		return (ObstructionMap.ContainsKey(position) && ObstructionMap[position].IsObstructing());
+	}
 
-		if (LightSourceMap.ContainsKey (lightSource)) {
-			foreach (GameObject light in LightSourceMap[lightSource]) {
-				light.SendMessage ("SetLightActive", state);
+	public void SetLightActive(char lightSource, bool state)
+	{
+
+		if (LightSourceMap.ContainsKey(lightSource))
+		{
+			foreach (GameObject light in LightSourceMap[lightSource])
+			{
+				light.SendMessage("SetLightActive", state);
 			}
 		}
 	}
 
-	public void ToggleLight(char lightSource) {
+	public void ToggleLight(char lightSource)
+	{
 
-		if (LightSourceMap.ContainsKey (lightSource)) {
-			foreach (GameObject light in LightSourceMap[lightSource]) {
-				light.SendMessage ("ToggleLight");
+		if (LightSourceMap.ContainsKey(lightSource))
+		{
+			foreach (GameObject light in LightSourceMap[lightSource])
+			{
+				light.SendMessage("ToggleLight");
 			}
 		}
 	}

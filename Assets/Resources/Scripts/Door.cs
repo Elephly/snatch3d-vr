@@ -1,15 +1,44 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class Door : MonoBehaviour {
+public class Door : Obstruction
+{
+	Animator DoorAnimator = null;
+	public bool IsDoorOpen = false;
+	public bool IsLocked { get; private set; }
+	public bool IsTransitioning = false;
 
-	// Use this for initialization
-	void Start () {
-	
+	public override bool IsObstructing()
+	{
+		return !IsDoorOpen;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	void Awake()
+	{
+		DoorAnimator = GetComponent<Animator>();
+		IsLocked = true;
+	}
+
+	public void SetLockedState(bool state)
+	{
+		IsLocked = state;
+	}
+
+	public void ToggleDoorState()
+	{
+		if (!IsLocked && !DoorAnimator.IsPlaying())
+		{
+			if (IsDoorOpen)
+			{
+				DoorAnimator.Play("DoorCloseAnimation");
+			}
+			else {
+				DoorAnimator.Play("DoorOpenAnimation");
+			}
+		}
+	}
+
+	public void Interact()
+	{
+		ToggleDoorState();
 	}
 }
