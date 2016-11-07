@@ -52,10 +52,50 @@
 			},
 			"Yaw": -90
 		}
-	]
-	"nil": "
-		map[6][0] = C_LOCK_1;
-		map[10][0] = C_LOCK_1;
-		map[0][10] = C_LOCK_2;
-	"
+	],
+    "DoorUnlockSwitches": [
+        {
+            "DoorPositions": [
+                {
+	                "X": 7,
+	                "Y": 4
+	            }
+            ],
+            "Position": {
+                "X": 6,
+                "Y": 1
+            },
+            "Yaw": 0
+        },
+        {
+            "DoorPositions": [
+                {
+	                "X": 8,
+	                "Y": 5
+	            }
+            ],
+            "Position": {
+                "X": 10,
+                "Y": 1
+            },
+            "Yaw": 0
+        },
+        {
+            "DoorPositions": [
+                {
+	                "X": 7,
+	                "Y": 6
+	            },
+                {
+                    "X": 9,
+                    "Y": 10
+                }
+            ],
+            "Position": {
+                "X": 1,
+                "Y": 10
+            },
+            "Yaw": 90
+        },
+    ]
 }

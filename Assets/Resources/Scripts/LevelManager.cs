@@ -190,6 +190,24 @@ public static class LevelManager
 			CurrentLevel.LevelEnvironmentObjects.Add(light);
 		}
 
+		foreach (JSONNode doorUnlockSwitch in levelDesign["DoorUnlockSwitches"].AsArray)
+		{
+			string assetPath = Utils.Path.Combine("Prefabs", "Switches", "DoorUnlockSwitch");
+			GameObject doorSwitch = MonoBehaviour.Instantiate(Resources.Load(assetPath)) as GameObject;
+			doorSwitch.transform.position = new Vector3(doorUnlockSwitch["Position"]["X"].AsFloat * LevelScale, 0.0f, doorUnlockSwitch["Position"]["Y"].AsFloat * LevelScale);
+			doorSwitch.transform.rotation = Quaternion.Euler(0.0f, doorUnlockSwitch["Yaw"].AsFloat, 0.0f);
+			doorSwitch.transform.localScale *= LevelScale;
+			foreach (JSONNode unlockableDoor in doorUnlockSwitch["DoorPositions"].AsArray)
+			{
+				Vector3 doorPos = new Vector3(unlockableDoor["X"].AsFloat * LevelScale, 0.0f, unlockableDoor["Y"].AsFloat * LevelScale);
+				if (CurrentLevel.ObstructionMap.ContainsKey(doorPos) && CurrentLevel.ObstructionMap[doorPos] is Door)
+				{
+					(CurrentLevel.ObstructionMap[doorPos] as Door).SetUnlockSwitch(doorSwitch.GetComponent<DoorUnlockSwitch>());
+				}
+			}
+			CurrentLevel.LevelEnvironmentObjects.Add(doorSwitch);
+		}
+
 		if (!playerStartSpace)
 		{
 			Debug.LogException(new System.Exception("No player start position."));

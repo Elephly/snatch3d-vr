@@ -4,8 +4,15 @@ public class Door : Obstruction
 {
 	Animator DoorAnimator = null;
 	public bool IsDoorOpen = false;
-	public bool IsLocked { get; private set; }
+	public bool IsLocked
+	{
+		get
+		{
+			return (UnlockSwitch != null && UnlockSwitch.IsLocked);
+		}
+	}
 	public bool IsTransitioning = false;
+	public DoorUnlockSwitch UnlockSwitch { get; private set; }
 
 	public override bool IsObstructing()
 	{
@@ -15,24 +22,27 @@ public class Door : Obstruction
 	void Awake()
 	{
 		DoorAnimator = GetComponent<Animator>();
-		IsLocked = true;
+		UnlockSwitch = null;
 	}
 
-	public void SetLockedState(bool state)
+	public void SetUnlockSwitch(DoorUnlockSwitch unlockSwitch)
 	{
-		IsLocked = state;
+		UnlockSwitch = unlockSwitch;
 	}
 
 	public void ToggleDoorState()
 	{
-		if (!IsLocked && !DoorAnimator.IsPlaying())
+		if (!DoorAnimator.IsPlaying())
 		{
 			if (IsDoorOpen)
 			{
 				DoorAnimator.Play("DoorCloseAnimation");
 			}
 			else {
-				DoorAnimator.Play("DoorOpenAnimation");
+				if (!IsLocked)
+				{
+					DoorAnimator.Play("DoorOpenAnimation");
+				}
 			}
 		}
 	}

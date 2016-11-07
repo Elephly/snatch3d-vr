@@ -38,5 +38,20 @@
 			},
 			"Yaw": -90
 		}
-	]
+	],
+    "DoorUnlockSwitches": [
+        {
+            "DoorPositions": [
+                {
+	                "X": 5,
+	                "Y": 10
+	            }
+            ],
+            "Position": {
+                "X": 1,
+                "Y": 5
+            },
+            "Yaw": 90
+        }
+    ]
 }
