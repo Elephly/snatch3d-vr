@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Level
 {
 
+	public float LevelScale { get; private set; }
 	public ArrayList LevelGrid { get; private set; }
 	public ArrayList LevelEnvironmentObjects { get; set; }
 	public Vector3 GoalLocation { get; set; }
@@ -13,8 +14,9 @@ public class Level
 	public Dictionary<char, ArrayList> LightSourceMap { get; set; }
 	public Dictionary<Vector3, Obstruction> ObstructionMap { get; set; }
 
-	public Level()
+	public Level(float levelScale)
 	{
+		LevelScale = levelScale;
 		LevelGrid = new ArrayList();
 		LevelEnvironmentObjects = new ArrayList();
 		LightSourceMap = new Dictionary<char, ArrayList>();

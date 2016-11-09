@@ -10,17 +10,23 @@ public static class LevelManager
 
 	public static GameObject PlayerGameObject { get; private set; }
 	public static int LevelNumber { get; private set; }
-	public static float LevelScale { get; private set; }
 	public static Level CurrentLevel { get; private set; }
+
+	public static float LevelScale
+	{
+		get
+		{
+			return CurrentLevel.LevelScale;
+		}
+	}
 
 	public static void Initialize(GameObject playerGameObject, float levelScale)
 	{
 		if (PlayerGameObject == null)
 		{
 			PlayerGameObject = playerGameObject;
-			LevelScale = levelScale;
 			LevelNumber = 0;
-			CurrentLevel = new Level();
+			CurrentLevel = new Level(levelScale);
 		}
 	}
 
