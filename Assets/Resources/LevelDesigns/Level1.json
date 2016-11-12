@@ -97,5 +97,39 @@
             },
             "Yaw": 90
         },
+    ],
+    "Enemies": [
+        {
+            "Type": "EasyAngryTuxedoEnemy",
+            "Position": {
+                "X": 1,
+                "Y": 8,
+            },
+            "Yaw": 0
+        },
+        {
+            "Type": "EasyAngryTuxedoEnemy",
+            "Position": {
+                "X": 4,
+                "Y": 2,
+            },
+            "Yaw": 90
+        },
+        {
+            "Type": "EasyAngryTuxedoEnemy",
+            "Position": {
+                "X": 8,
+                "Y": 2,
+            },
+            "Yaw": 90
+        },
+        {
+            "Type": "EasyAngryTuxedoEnemy",
+            "Position": {
+                "X": 6,
+                "Y": 9,
+            },
+            "Yaw": 180
+        }
     ]
 }

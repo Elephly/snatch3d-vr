@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 public class Level
 {
-
 	public float LevelScale { get; private set; }
+	public Vector3 GoalLocation { get; set; }
+
+	// Strong references
 	public ArrayList LevelGrid { get; private set; }
 	public ArrayList LevelEnvironmentObjects { get; set; }
-	public Vector3 GoalLocation { get; set; }
+	public ArrayList LevelEnemies { get; set; }
 
 	// Weak references
 	public Dictionary<char, ArrayList> LightSourceMap { get; set; }
@@ -17,8 +19,10 @@ public class Level
 	public Level(float levelScale)
 	{
 		LevelScale = levelScale;
+		GoalLocation = Vector3.zero;
 		LevelGrid = new ArrayList();
 		LevelEnvironmentObjects = new ArrayList();
+		LevelEnemies = new ArrayList();
 		LightSourceMap = new Dictionary<char, ArrayList>();
 		ObstructionMap = new Dictionary<Vector3, Obstruction>();
 	}
@@ -41,6 +45,12 @@ public class Level
 			MonoBehaviour.Destroy(obj);
 		}
 		LevelEnvironmentObjects.Clear();
+
+		foreach (Object obj in LevelEnemies)
+		{
+			MonoBehaviour.Destroy(obj);
+		}
+		LevelEnemies.Clear();
 
 		LightSourceMap.Clear();
 

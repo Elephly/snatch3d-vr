@@ -53,5 +53,15 @@
             },
             "Yaw": 90
         }
+    ],
+    "Enemies": [
+        {
+            "Type": "EasyAngryTuxedoEnemy",
+            "Position": {
+                "X": 5,
+                "Y": 1,
+            },
+            "Yaw": -90
+        }
     ]
 }

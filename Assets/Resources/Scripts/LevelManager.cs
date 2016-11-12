@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.IO;
 using System.Linq;
 
 using SimpleJSON;
@@ -51,16 +50,15 @@ public static class LevelManager
 
 		CurrentLevel.Destroy();
 
+		// Reading the JSON level.Grid string array field
 		int i = 0;
 		foreach (var row in levelDesign["Grid"].AsArray)
 		{
-
 			int rowIndex = (levelDesign["Grid"].Count - 1) - i;
 			CurrentLevel.AddRow(new ArrayList());
 
 			foreach (var column in row.ToString().Trim('"').ToCharArray().Select((value, index) => new { value, index }))
 			{
-
 				string assetPrefabPath = Utils.Path.Combine("Prefabs");
 				string assetPath = null;
 				Quaternion doorRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
@@ -163,10 +161,10 @@ public static class LevelManager
 			i++;
 		}
 
+		// Reading the JSON level.LightSourceMap string array field
 		i = 0;
 		foreach (var row in levelDesign["LightSourceMap"].AsArray)
 		{
-
 			foreach (var column in row.ToString().Trim('"').ToCharArray().Select((value, index) => new { value, index }))
 			{
 				if (column.value == '-')
@@ -184,9 +182,9 @@ public static class LevelManager
 			i++;
 		}
 
+		// Reading the JSON level.LightSwitches object array field
 		foreach (JSONNode lightSwitch in levelDesign["LightSwitches"].AsArray)
 		{
-
 			string assetPath = Utils.Path.Combine("Prefabs", "Switches", "LightSwitch");
 			GameObject light = MonoBehaviour.Instantiate(Resources.Load(assetPath)) as GameObject;
 			light.transform.position = new Vector3(lightSwitch["Position"]["X"].AsFloat * LevelScale, 0.0f, lightSwitch["Position"]["Y"].AsFloat * LevelScale);
@@ -196,6 +194,7 @@ public static class LevelManager
 			CurrentLevel.LevelEnvironmentObjects.Add(light);
 		}
 
+		// Reading the JSON level.DoorUnlockSwitches object array field
 		foreach (JSONNode doorUnlockSwitch in levelDesign["DoorUnlockSwitches"].AsArray)
 		{
 			string assetPath = Utils.Path.Combine("Prefabs", "Switches", "DoorUnlockSwitch");
@@ -212,6 +211,17 @@ public static class LevelManager
 				}
 			}
 			CurrentLevel.LevelEnvironmentObjects.Add(doorSwitch);
+		}
+
+		// Reading the JSON level.Enemies object array field
+		foreach (JSONNode enemy in levelDesign["Enemies"].AsArray)
+		{
+			string assetPath = Utils.Path.Combine("Prefabs", "Enemies", enemy["Type"]);
+			GameObject enemyPlayer = MonoBehaviour.Instantiate(Resources.Load(assetPath)) as GameObject;
+			enemyPlayer.transform.position = new Vector3(enemy["Position"]["X"].AsFloat * LevelScale, 0.0f, enemy["Position"]["Y"].AsFloat * LevelScale);
+			enemyPlayer.transform.rotation = Quaternion.Euler(0.0f, enemy["Yaw"].AsFloat, 0.0f);
+			enemyPlayer.transform.localScale *= LevelScale;
+			CurrentLevel.LevelEnemies.Add(enemyPlayer);
 		}
 
 		if (!playerStartSpace)
