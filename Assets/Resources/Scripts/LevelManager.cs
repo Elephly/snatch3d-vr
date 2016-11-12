@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 using SimpleJSON;
@@ -124,8 +125,7 @@ public static class LevelManager
 						// Start
 						if (!playerStartSpace)
 						{
-							PlayerGameObject.transform.position = rowColumnPosition;
-							PlayerGameObject.SendMessage("SetDestinationTarget", new DestinationTarget(rowColumnPosition));
+							PlayerGameObject.SendMessage("SetPosition", rowColumnPosition);
 							playerStartSpace = true;
 						}
 						goto case 'F';
@@ -218,9 +218,17 @@ public static class LevelManager
 		{
 			string assetPath = Utils.Path.Combine("Prefabs", "Enemies", enemy["Type"]);
 			GameObject enemyPlayer = MonoBehaviour.Instantiate(Resources.Load(assetPath)) as GameObject;
+			enemyPlayer.SendMessage("SetPosition", new Vector3(enemy["Position"]["X"].AsFloat * LevelScale, 0.0f, enemy["Position"]["Y"].AsFloat * LevelScale));
 			enemyPlayer.transform.position = new Vector3(enemy["Position"]["X"].AsFloat * LevelScale, 0.0f, enemy["Position"]["Y"].AsFloat * LevelScale);
 			enemyPlayer.transform.rotation = Quaternion.Euler(0.0f, enemy["Yaw"].AsFloat, 0.0f);
 			enemyPlayer.transform.localScale *= LevelScale;
+			enemyPlayer.SendMessage("SetRestTimeSeconds", enemy["RestTimeSeconds"].AsFloat);
+			List<Vector3> patrolPath = new List<Vector3>();
+			foreach (JSONNode position in enemy["PatrolPath"].AsArray)
+			{
+				patrolPath.Add(new Vector3(position["X"].AsFloat * LevelScale, 0.0f, position["Y"].AsFloat * LevelScale));
+			}
+			enemyPlayer.SendMessage("SetPatrolPath", patrolPath);
 			CurrentLevel.LevelEnemies.Add(enemyPlayer);
 		}
 

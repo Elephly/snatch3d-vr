@@ -56,11 +56,30 @@
     ],
     "Enemies": [
         {
-            "Type": "EasyAngryTuxedoEnemy",
+            "PatrolPath": [
+                {
+                    "X": 1,
+                    "Y": 1
+                },
+                {
+                    "X": 1,
+                    "Y": 9
+                },
+                {
+                    "X": 9,
+                    "Y": 9
+                },
+                {
+                    "X": 9,
+                    "Y": 1
+                }
+            ],
             "Position": {
                 "X": 5,
                 "Y": 1,
             },
+            "RestTimeSeconds": 1,
+            "Type": "EasyAngryTuxedoEnemy",
             "Yaw": -90
         }
     ]

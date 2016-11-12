@@ -100,35 +100,95 @@
     ],
     "Enemies": [
         {
-            "Type": "EasyAngryTuxedoEnemy",
+            "PatrolPath": [
+                {
+                    "X": 1,
+                    "Y": 8
+                },
+                {
+                    "X": 1,
+                    "Y": 10
+                },
+                {
+                    "X": 4,
+                    "Y": 10
+                },
+                {
+                    "X": 4,
+                    "Y": 8
+                }
+            ],
             "Position": {
                 "X": 1,
                 "Y": 8,
             },
+            "RestTimeSeconds": 1,
+            "Type": "EasyAngryTuxedoEnemy",
             "Yaw": 0
         },
         {
-            "Type": "EasyAngryTuxedoEnemy",
+            "PatrolPath": [
+                {
+                    "X": 4,
+                    "Y": 2
+                },
+                {
+                    "X": 6,
+                    "Y": 2
+                },
+                {
+                    "X": 6,
+                    "Y": 4
+                },
+                {
+                    "X": 4,
+                    "Y": 4
+                }
+            ],
             "Position": {
                 "X": 4,
                 "Y": 2,
             },
+            "RestTimeSeconds": 1,
+            "Type": "EasyAngryTuxedoEnemy",
             "Yaw": 90
         },
         {
-            "Type": "EasyAngryTuxedoEnemy",
+            "PatrolPath": [
+                {
+                    "X": 8,
+                    "Y": 2
+                },
+                {
+                    "X": 10,
+                    "Y": 2
+                }
+            ],
             "Position": {
                 "X": 8,
                 "Y": 2,
             },
+            "RestTimeSeconds": 1,
+            "Type": "EasyAngryTuxedoEnemy",
             "Yaw": 90
         },
         {
-            "Type": "EasyAngryTuxedoEnemy",
+            "PatrolPath": [
+                {
+                    "X": 6,
+                    "Y": 9
+                },
+                {
+                    "X": 6,
+                    "Y": 7
+                }
+            ],
             "Position": {
                 "X": 6,
                 "Y": 9,
             },
+            "RestTimeSeconds": 1,
+            "Type": "EasyAngryTuxedoEnemy",
             "Yaw": 180
         }
     ]
