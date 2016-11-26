@@ -6,9 +6,10 @@ public class Player : MonoBehaviour
 
 	protected Vector3 Destination = Vector3.zero;
 	protected Stack<Vector3> NextDestinations = null;
-	GameObject Target = null;
+	protected GameObject Target = null;
+	protected Vector3 Velocity = Vector3.zero;
+
 	float Speed = 3.0f;
-	Vector3 Velocity = Vector3.zero;
 
 	protected virtual void Awake()
 	{
@@ -40,7 +41,7 @@ public class Player : MonoBehaviour
 		Target = null;
 	}
 
-	public void SetDestinationTarget(DestinationTarget destinationTarget)
+	public  virtual void SetDestinationTarget(DestinationTarget destinationTarget)
 	{
 		var path = PathFinder.Dijkstra(LevelManager.CurrentLevel, transform.position, destinationTarget.Destination);
 		path.Add(transform.position);

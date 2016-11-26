@@ -69,6 +69,18 @@ public class Level
 		return (LevelGrid[row] as ArrayList).Add(value);
 	}
 
+	public object GetGameObjectAtRowColumnIndex(int row, int column)
+	{
+		object go = null;
+		int rowCount = LevelGrid.Count;
+
+		if (row >= 0 && column >= 0 && rowCount > row && LevelGrid[rowCount - 1 - row] is ArrayList && (LevelGrid[rowCount - 1 - row] as ArrayList).Count > column)
+		{
+			go = (LevelGrid[rowCount - 1 - row] as ArrayList)[column];
+		}
+		return go;
+	}
+
 	public bool HasObstruction(Vector3 position)
 	{
 		return (ObstructionMap.ContainsKey(position) && ObstructionMap[position].IsObstructing());
