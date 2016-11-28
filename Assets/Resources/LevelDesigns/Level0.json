@@ -78,7 +78,7 @@
                 "X": 5,
                 "Y": 1,
             },
-            "RestTimeSeconds": 1,
+            "RestTimeSeconds": 2,
             "Type": "EasyAngryTuxedoEnemy",
             "Yaw": -90
         }

@@ -146,14 +146,6 @@ public static class LevelManager
 						floor.transform.localScale *= LevelScale;
 						CurrentLevel.AddToRow(i, floor);
 						break;
-					/*
-					case 'U':
-					// Door Unlock Switch
-						break;
-					case 'E':
-					// Enemy
-						break;
-					*/
 					default:
 						break;
 				}

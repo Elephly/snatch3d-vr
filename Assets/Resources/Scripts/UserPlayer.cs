@@ -30,7 +30,7 @@ public class UserPlayer : Player
 		{
 			GameObject xTileGO = xDirectionTile as GameObject;
 			float repelX = (xTileGO.transform.position - (Vector3.Project(xTileGO.transform.position - transform.position, Vector3.right).normalized * LevelManager.LevelScale)).x;
-			transform.position = new Vector3(repelX, transform.position.y, transform.position.z);
+			//transform.position = new Vector3(repelX, transform.position.y, transform.position.z);
 			Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.right);
 		}
 
@@ -40,7 +40,7 @@ public class UserPlayer : Player
 		{
 			GameObject zTileGO = zDirectionTile as GameObject;
 			float repelz = (zTileGO.transform.position - (Vector3.Project(zTileGO.transform.position - transform.position, Vector3.forward).normalized * LevelManager.LevelScale)).z;
-			transform.position = new Vector3(transform.position.x, transform.position.y, repelz);
+			//transform.position = new Vector3(transform.position.x, transform.position.y, repelz);
 			Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.forward);
 		}
 
