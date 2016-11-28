@@ -163,13 +163,13 @@ public static class LevelManager
 				{
 					continue;
 				}
-				if (!CurrentLevel.LightSourceMap.ContainsKey(column.value))
+				if (!CurrentLevel.LightSourceListenerMap.ContainsKey(column.value))
 				{
-					CurrentLevel.LightSourceMap[column.value] = new ArrayList();
+					CurrentLevel.LightSourceListenerMap[column.value] = new ArrayList();
 				}
 				var spaceTile = (CurrentLevel.LevelGrid[i] as ArrayList)[column.index];
 				(spaceTile as GameObject).SendMessage("SetLightSource", column.value);
-				CurrentLevel.LightSourceMap[column.value].Add(spaceTile);
+				CurrentLevel.LightSourceListenerMap[column.value].Add(spaceTile);
 			}
 			i++;
 		}
@@ -183,6 +183,7 @@ public static class LevelManager
 			light.transform.rotation = Quaternion.Euler(0.0f, lightSwitch["Yaw"].AsFloat, 0.0f);
 			light.transform.localScale *= LevelScale;
 			light.SendMessage("SetLightSource", lightSwitch["LightSource"].ToString().Trim('"').ToCharArray()[0]);
+			CurrentLevel.LightSourceMap[lightSwitch["LightSource"].ToString().Trim('"').ToCharArray()[0]] = light;
 			CurrentLevel.LevelEnvironmentObjects.Add(light);
 		}
 
@@ -221,6 +222,17 @@ public static class LevelManager
 				patrolPath.Add(new Vector3(position["X"].AsFloat * LevelScale, 0.0f, position["Y"].AsFloat * LevelScale));
 			}
 			enemyPlayer.SendMessage("SetPatrolPath", patrolPath);
+			string enemyLightSource = enemy["LightSource"].ToString().Trim('"');
+			if (!string.IsNullOrEmpty(enemyLightSource) && enemyLightSource != "-")
+			{
+				char enemyLightSourceChar = enemyLightSource.ToCharArray()[0];
+				if (!CurrentLevel.LightSourceListenerMap.ContainsKey(enemyLightSourceChar))
+				{
+					CurrentLevel.LightSourceListenerMap[enemyLightSourceChar] = new ArrayList();
+				}
+				enemyPlayer.SendMessage("SetLightSource", enemyLightSourceChar);
+				CurrentLevel.LightSourceListenerMap[enemyLightSourceChar].Add(enemyPlayer);
+			}
 			CurrentLevel.LevelEnemies.Add(enemyPlayer);
 		}
 

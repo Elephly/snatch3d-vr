@@ -64,9 +64,9 @@ public class DoorUnlockSwitch : MonoBehaviour
 		}
 	}
 
-	public void Interact()
+	public void Interact(GameObject sender)
 	{
-		if ((Camera.main.transform.position - transform.position).sqrMagnitude <= 4.0f)
+		if ((sender.transform.position - transform.position).sqrMagnitude <= 4.0f)
 		{
 			ToggleDoorUnlockSwitch();
 		}
@@ -74,7 +74,7 @@ public class DoorUnlockSwitch : MonoBehaviour
 		{
 			if (!LevelManager.CurrentLevel.HasObstruction(transform.position))
 			{
-				Camera.main.SendMessage("SetDestinationTarget", new DestinationTarget(transform.position, gameObject));
+				sender.SendMessage("SetDestinationTarget", new DestinationTarget(transform.position, gameObject));
 			}
 		}
 	}
@@ -98,7 +98,7 @@ public class DoorUnlockSwitch : MonoBehaviour
 	/// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
 	public void OnGazeTrigger()
 	{
-		Interact();
+		Interact(Camera.main.gameObject);
 	}
 
 	#endregion

@@ -13,7 +13,8 @@ public class Level
 	public ArrayList LevelEnemies { get; set; }
 
 	// Weak references
-	public Dictionary<char, ArrayList> LightSourceMap { get; set; }
+	public Dictionary<char, GameObject> LightSourceMap { get; set; }
+	public Dictionary<char, ArrayList> LightSourceListenerMap { get; set; }
 	public Dictionary<Vector3, Obstruction> ObstructionMap { get; set; }
 
 	public Level(float levelScale)
@@ -23,7 +24,8 @@ public class Level
 		LevelGrid = new ArrayList();
 		LevelEnvironmentObjects = new ArrayList();
 		LevelEnemies = new ArrayList();
-		LightSourceMap = new Dictionary<char, ArrayList>();
+		LightSourceMap = new Dictionary<char, GameObject>();
+		LightSourceListenerMap = new Dictionary<char, ArrayList>();
 		ObstructionMap = new Dictionary<Vector3, Obstruction>();
 	}
 
@@ -53,6 +55,8 @@ public class Level
 		LevelEnemies.Clear();
 
 		LightSourceMap.Clear();
+
+		LightSourceListenerMap.Clear();
 
 		ObstructionMap.Clear();
 	}
@@ -89,11 +93,11 @@ public class Level
 	public void SetLightActive(char lightSource, bool state)
 	{
 
-		if (LightSourceMap.ContainsKey(lightSource))
+		if (LightSourceListenerMap.ContainsKey(lightSource))
 		{
-			foreach (GameObject light in LightSourceMap[lightSource])
+			foreach (GameObject lightSourceListener in LightSourceListenerMap[lightSource])
 			{
-				light.SendMessage("SetLightActive", state);
+				lightSourceListener.SendMessage("SetLightActive", state);
 			}
 		}
 	}
@@ -101,11 +105,11 @@ public class Level
 	public void ToggleLight(char lightSource)
 	{
 
-		if (LightSourceMap.ContainsKey(lightSource))
+		if (LightSourceListenerMap.ContainsKey(lightSource))
 		{
-			foreach (GameObject light in LightSourceMap[lightSource])
+			foreach (GameObject lightSourceListener in LightSourceListenerMap[lightSource])
 			{
-				light.SendMessage("ToggleLight");
+				lightSourceListener.SendMessage("ToggleLight");
 			}
 		}
 	}

@@ -47,7 +47,7 @@ public class Door : Obstruction
 		}
 	}
 
-	public void Interact()
+	public void Interact(GameObject sender)
 	{
 		ToggleDoorState();
 	}

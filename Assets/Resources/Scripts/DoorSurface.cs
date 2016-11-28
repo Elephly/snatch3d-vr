@@ -15,19 +15,19 @@ public class DoorSurface : MonoBehaviour, IGvrGazeResponder
 		GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
 	}
 
-	public void Interact()
+	public void Interact(GameObject sender)
 	{
 		Vector3 positionWithRootY = new Vector3(transform.position.x, rootParent.position.y, transform.position.z);
 		Vector3 positionBeforeDoor = rootParent.position + ((positionWithRootY - rootParent.position) * (2.0f / 0.75f));
-		if ((Camera.main.transform.position - positionBeforeDoor).sqrMagnitude <= 4.0f)
+		if ((sender.transform.position - positionBeforeDoor).sqrMagnitude <= 4.0f)
 		{
-			rootParent.gameObject.SendMessage("Interact");
+			rootParent.gameObject.SendMessage("Interact", sender);
 		}
 		else
 		{
 			if (!LevelManager.CurrentLevel.HasObstruction(positionBeforeDoor))
 			{
-				Camera.main.SendMessage("SetDestinationTarget", new DestinationTarget(positionBeforeDoor, rootParent.gameObject));
+				sender.SendMessage("SetDestinationTarget", new DestinationTarget(positionBeforeDoor, rootParent.gameObject));
 			}
 		}
 	}
@@ -51,7 +51,7 @@ public class DoorSurface : MonoBehaviour, IGvrGazeResponder
 	/// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
 	public void OnGazeTrigger()
 	{
-		Interact();
+		Interact(Camera.main.gameObject);
 	}
 
 	#endregion

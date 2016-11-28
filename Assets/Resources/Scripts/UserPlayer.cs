@@ -73,11 +73,8 @@ public class UserPlayer : Player
 
 	protected override void TargetReached()
 	{
-		Velocity = Vector3.zero;
-		if (Target != null)
-		{
-			Target.SendMessage("Interact");
-			Target = null;
-		}
+		Vector3 oldPosition = transform.position;
+		base.TargetReached();
+		transform.position = oldPosition;
 	}
 }

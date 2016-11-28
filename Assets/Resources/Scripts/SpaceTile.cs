@@ -33,6 +33,7 @@ public class SpaceTile : MonoBehaviour, IGvrGazeResponder
 		{
 			SpotLight = light.gameObject;
 		}
+		LightSource = '-';
 	}
 
 	public void SetLightSource(char lightSource)
@@ -42,7 +43,10 @@ public class SpaceTile : MonoBehaviour, IGvrGazeResponder
 
 	public void SetLightActive(bool state)
 	{
-		SpotLight.SetActive(state);
+		if (SpotLight != null)
+		{
+			SpotLight.SetActive(state);
+		}
 	}
 
 	public void ToggleLight()

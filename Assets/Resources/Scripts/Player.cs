@@ -74,8 +74,9 @@ public class Player : MonoBehaviour
 		transform.position = Destination;
 		if (Target != null)
 		{
-			Target.SendMessage("Interact");
+			GameObject oldTarget = Target;
 			Target = null;
+			oldTarget.SendMessage("Interact", gameObject);
 		}
 	}
 }
