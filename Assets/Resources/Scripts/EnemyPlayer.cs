@@ -49,6 +49,13 @@ public class EnemyPlayer : Player
 			transform.position -= Velocity;
 			remainingRestTimeSeconds -= Time.deltaTime;
 		}
+		else
+		{
+			if (Destination != transform.position)
+			{
+				transform.forward = Destination - transform.position;
+			}
+		}
 	}
 
 	public void SetPatrolPath(List<Vector3> patrolPath)
@@ -80,7 +87,6 @@ public class EnemyPlayer : Player
 
 	public override void SetDestinationTarget(DestinationTarget destinationTarget)
 	{
-		transform.forward = destinationTarget.Destination - transform.position;
 		base.SetDestinationTarget(destinationTarget);
 		remainingRestTimeSeconds = RestTimeSeconds;
 	}
