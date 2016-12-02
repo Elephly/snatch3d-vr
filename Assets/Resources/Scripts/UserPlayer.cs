@@ -2,7 +2,7 @@
 
 public class UserPlayer : Player
 {
-	const float footStepIntervalSeconds = 0.5f;
+	const float footStepIntervalSeconds = 0.4f;
 	const float footStepInitialOffset = footStepIntervalSeconds / 2.0f;
 
 	GvrAudioSource footSteps = null;
