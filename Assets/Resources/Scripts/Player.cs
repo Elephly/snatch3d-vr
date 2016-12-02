@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
-
 	protected Vector3 Destination = Vector3.zero;
 	protected Stack<Vector3> NextDestinations = null;
 	protected GameObject Target = null;

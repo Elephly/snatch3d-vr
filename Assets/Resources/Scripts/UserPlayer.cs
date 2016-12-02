@@ -2,10 +2,17 @@
 
 public class UserPlayer : Player
 {
+	const float footStepIntervalSeconds = 0.5f;
+	const float footStepInitialOffset = footStepIntervalSeconds / 2.0f;
+
+	GvrAudioSource footSteps = null;
+	float lastFootStepElapsedTimeSeconds = footStepInitialOffset;
+
 	void Start()
 	{
 		LevelManager.Initialize(gameObject, 2.0f);
 		LevelManager.LoadLevel(0);
+		footSteps = transform.GetComponentInChildren<GvrAudioSource>();
 	}
 
 	// Update is called once per frame
@@ -47,6 +54,16 @@ public class UserPlayer : Player
 		if ((Destination - transform.position).sqrMagnitude <= Mathf.Pow(0.725f * LevelManager.LevelScale, 2))
 		{
 			DestinationReached();
+			lastFootStepElapsedTimeSeconds = footStepInitialOffset;
+		}
+		else
+		{
+			if (lastFootStepElapsedTimeSeconds >= footStepIntervalSeconds && !footSteps.isPlaying)
+			{
+				footSteps.Play();
+				lastFootStepElapsedTimeSeconds = 0.0f;
+			}
+			lastFootStepElapsedTimeSeconds += Time.deltaTime;
 		}
 
 		transform.position += Velocity;
