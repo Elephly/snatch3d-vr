@@ -5,14 +5,19 @@ public class UserPlayer : Player
 	const float footStepIntervalSeconds = 0.4f;
 	const float footStepInitialOffset = footStepIntervalSeconds / 2.0f;
 
-	GvrAudioSource footSteps = null;
+	GvrAudioSource footStepsAudioSource = null;
 	float lastFootStepElapsedTimeSeconds = footStepInitialOffset;
+
+	protected override void Awake()
+	{
+		base.Awake();
+		footStepsAudioSource = transform.GetComponentInChildren<GvrAudioSource>();
+	}
 
 	void Start()
 	{
 		LevelManager.Initialize(gameObject, 2.0f);
 		LevelManager.LoadLevel(0);
-		footSteps = transform.GetComponentInChildren<GvrAudioSource>();
 	}
 
 	// Update is called once per frame
@@ -58,9 +63,9 @@ public class UserPlayer : Player
 		}
 		else
 		{
-			if (lastFootStepElapsedTimeSeconds >= footStepIntervalSeconds && !footSteps.isPlaying)
+			if (lastFootStepElapsedTimeSeconds >= footStepIntervalSeconds && !footStepsAudioSource.isPlaying)
 			{
-				footSteps.Play();
+				footStepsAudioSource.Play();
 				lastFootStepElapsedTimeSeconds = 0.0f;
 			}
 			lastFootStepElapsedTimeSeconds += Time.deltaTime;

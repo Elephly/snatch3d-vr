@@ -15,7 +15,7 @@ public class LightSwitch : MonoBehaviour, IGvrGazeResponder
 	{
 		get
 		{
-			return LightSwitchAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash == Animator.StringToHash("LightSwitchOnAnimation");
+			return !LightSwitchAnimator.GetCurrentAnimatorStateInfo(0).IsName("LightSwitchOffAnimation");
 		}
 	}
 
