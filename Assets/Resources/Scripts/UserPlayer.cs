@@ -5,12 +5,19 @@ public class UserPlayer : Player
 	const float footStepIntervalSeconds = 0.4f;
 	const float footStepInitialOffset = footStepIntervalSeconds / 2.0f;
 
+	GameObject redScreenOverlayObject = null;
 	GvrAudioSource footStepsAudioSource = null;
 	float lastFootStepElapsedTimeSeconds = footStepInitialOffset;
+	bool redScreenOverlayFadingIn = true;
 
 	protected override void Awake()
 	{
 		base.Awake();
+		Transform redScreenOverlay = transform.FindBreadthFirst("RedScreenOverlay");
+		if (redScreenOverlay != null)
+		{
+			redScreenOverlayObject = redScreenOverlay.gameObject;
+		}
 		footStepsAudioSource = transform.GetComponentInChildren<GvrAudioSource>();
 	}
 
@@ -99,4 +106,17 @@ public class UserPlayer : Player
 		base.TargetReached();
 		transform.position = oldPosition;
 	}
+
+	/*
+	void RedScreenOverlayFadeInAndOut()
+	{
+		Color col = redScreenOverlayObject.GetComponent<Renderer>().material.color;
+		if (col.a >= 1.0f)
+			redScreenOverlayFadingIn = false;
+		else if (col.a <= 0.0f)
+			redScreenOverlayFadingIn = true;
+		float fadeSpeed = Time.deltaTime * (redScreenOverlayFadingIn ? 1.0f : -1.0f) * 0.5f;
+		redScreenOverlayObject.GetComponent<Renderer>().material.color = new Color(col.r, col.g, col.b, 0.0f);
+	}
+	*/
 }
