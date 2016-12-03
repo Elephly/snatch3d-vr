@@ -38,7 +38,7 @@ public class Door : Obstruction
 			if (wasTransitioning)
 			{
 				doorAudioSource.Stop();
-				doorAudioSource.gainDb = 20.0f;
+				doorAudioSource.gainDb = 18.0f;
 				doorAudioSource.PlayOneShot(doorFinishOpenCloseAudioClip);
 			}
 		}
@@ -64,14 +64,14 @@ public class Door : Obstruction
 			if (IsDoorOpen)
 			{
 				DoorAnimator.Play("DoorCloseAnimation");
-				doorAudioSource.gainDb = 8.0f;
+				doorAudioSource.gainDb = 6.0f;
 				doorAudioSource.PlayOneShot(doorOpenCloseAudioClip);
 			}
 			else {
 				if (!IsLocked)
 				{
 					DoorAnimator.Play("DoorOpenAnimation");
-					doorAudioSource.gainDb = 8.0f;
+					doorAudioSource.gainDb = 6.0f;
 					doorAudioSource.PlayOneShot(doorOpenCloseAudioClip);
 				}
 				else
