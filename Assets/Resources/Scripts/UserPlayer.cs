@@ -2,13 +2,20 @@
 
 public class UserPlayer : Player
 {
+	enum FADE_TYPE
+	{
+		FADE_IN,
+		FADE_OUT
+	}
+	
 	const float footStepIntervalSeconds = 0.4f;
 	const float footStepInitialOffset = footStepIntervalSeconds / 2.0f;
 
 	GameObject redScreenOverlayObject = null;
+	FADE_TYPE redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
+	float redScreenOverlayFadeSpeed = 1.25f;
 	GvrAudioSource footStepsAudioSource = null;
 	float lastFootStepElapsedTimeSeconds = footStepInitialOffset;
-	bool redScreenOverlayFadingIn = true;
 
 	protected override void Awake()
 	{
@@ -17,6 +24,8 @@ public class UserPlayer : Player
 		if (redScreenOverlay != null)
 		{
 			redScreenOverlayObject = redScreenOverlay.gameObject;
+			Color col = redScreenOverlayObject.GetComponent<Renderer>().material.color;
+			redScreenOverlayObject.GetComponent<Renderer>().material.color = new Color(col.r, col.g, col.b, 0.0f);
 		}
 		footStepsAudioSource = transform.GetComponentInChildren<GvrAudioSource>();
 	}
@@ -84,6 +93,16 @@ public class UserPlayer : Player
 		{
 			LevelManager.LoadNextLevel();
 		}
+
+		//
+		//Color col = redScreenOverlayObject.GetComponent<Renderer>().material.color;
+		//if (col.a >= 1.0f)
+		//	redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
+		//else if (col.a <= 0.0f)
+		//	redScreenOverlayFadeType = FADE_TYPE.FADE_IN;
+		//
+
+		ScreenOverlayFade(redScreenOverlayObject, redScreenOverlayFadeType, redScreenOverlayFadeSpeed);
 	}
 
 	public override void SetDestinationTarget(DestinationTarget destinationTarget)
@@ -107,16 +126,10 @@ public class UserPlayer : Player
 		transform.position = oldPosition;
 	}
 
-	/*
-	void RedScreenOverlayFadeInAndOut()
+	void ScreenOverlayFade(GameObject screen, FADE_TYPE fadeType, float fadeSpeed)
 	{
-		Color col = redScreenOverlayObject.GetComponent<Renderer>().material.color;
-		if (col.a >= 1.0f)
-			redScreenOverlayFadingIn = false;
-		else if (col.a <= 0.0f)
-			redScreenOverlayFadingIn = true;
-		float fadeSpeed = Time.deltaTime * (redScreenOverlayFadingIn ? 1.0f : -1.0f) * 0.5f;
-		redScreenOverlayObject.GetComponent<Renderer>().material.color = new Color(col.r, col.g, col.b, 0.0f);
+		Color col = screen.GetComponent<Renderer>().material.color;
+		float newAlpha = Mathf.Clamp(col.a + Time.deltaTime * (fadeType == FADE_TYPE.FADE_IN ? 1.0f : -1.0f) * fadeSpeed, 0.0f, 1.0f);
+		screen.GetComponent<Renderer>().material.color = new Color(col.r, col.g, col.b, newAlpha);
 	}
-	*/
 }
