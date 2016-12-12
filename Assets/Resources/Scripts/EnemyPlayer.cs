@@ -7,11 +7,27 @@ public class EnemyPlayer : Player
 	public bool IsLightActive { get; private set; }
 	public List<Vector3> PatrolPath { get; private set; }
 	public float RestTimeSeconds { get; set; }
+	public float FieldOfView { get; private set; }
+
+	public bool CanSeeMainPlayer
+	{
+		get
+		{
+			Vector3 playerDirection = MainPlayer.transform.position - transform.position;
+			RaycastHit hitInfo = new RaycastHit();
+			if (IsLightActive)
+				Physics.Raycast(transform.position, playerDirection, out hitInfo);
+			else
+				Physics.Raycast(transform.position, playerDirection, out hitInfo, LevelManager.LevelScale);
+			return (Vector3.Angle(transform.forward, playerDirection) < FieldOfView / 2.0f) && hitInfo.transform == MainPlayer.transform;
+		}
+	}
 
 	Animator EnemyAnimator = null;
 	int CurrentPatrolPathDestinationIndex = -1;
 	float remainingRestTimeSeconds = 0.0f;
 	bool isResting = true;
+	bool detectingMainPlayer = false;
 
 	protected override void Awake()
 	{
@@ -21,10 +37,25 @@ public class EnemyPlayer : Player
 		IsLightActive = true;
 		PatrolPath = new List<Vector3>();
 		RestTimeSeconds = 0.0f;
+		FieldOfView = 45.0f;
 	}
 
 	protected override void Update()
 	{
+		if (CanSeeMainPlayer)
+		{
+			if (!detectingMainPlayer)
+				Player.DetectingMainPlayer();
+			ChaseMainPlayer();
+			detectingMainPlayer = true;
+		}
+		else
+		{
+			if (detectingMainPlayer)
+				Player.NotDetectingMainPlayer();
+			detectingMainPlayer = false;
+		}
+		
 		base.Update();
 
 		if (remainingRestTimeSeconds > 0.0f || transform.position == Destination)
@@ -121,5 +152,9 @@ public class EnemyPlayer : Player
 			DestinationTarget destinationTarget = new DestinationTarget(PatrolPath[++CurrentPatrolPathDestinationIndex % PatrolPath.Count], null);
 			SetDestinationTarget(destinationTarget);
 		}
+	}
+
+	void ChaseMainPlayer()
+	{
 	}
 }

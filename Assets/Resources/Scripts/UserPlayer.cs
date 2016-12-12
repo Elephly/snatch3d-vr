@@ -11,15 +11,20 @@ public class UserPlayer : Player
 	const float footStepIntervalSeconds = 0.4f;
 	const float footStepInitialOffset = footStepIntervalSeconds / 2.0f;
 
+	public AudioClip UndetectedBackgroundMusicClip = null;
+	public AudioClip DetectedBackgroundMusicClip = null;
+
+	AudioSource backgroundMusicSource = null;
 	GameObject redScreenOverlayObject = null;
 	FADE_TYPE redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
-	float redScreenOverlayFadeSpeed = 1.25f;
+	float redScreenOverlayFadeSpeed = 1.5f;
 	GvrAudioSource footStepsAudioSource = null;
 	float lastFootStepElapsedTimeSeconds = footStepInitialOffset;
 
 	protected override void Awake()
 	{
 		base.Awake();
+		backgroundMusicSource = GetComponent<AudioSource>();
 		Transform redScreenOverlay = transform.FindBreadthFirst("RedScreenOverlay");
 		if (redScreenOverlay != null)
 		{
@@ -28,6 +33,7 @@ public class UserPlayer : Player
 			redScreenOverlayObject.GetComponent<Renderer>().material.color = new Color(col.r, col.g, col.b, 0.0f);
 		}
 		footStepsAudioSource = transform.GetComponentInChildren<GvrAudioSource>();
+		MainPlayer = this;
 	}
 
 	void Start()
@@ -40,6 +46,8 @@ public class UserPlayer : Player
 	protected override void Update()
 	{
 		base.Update();
+
+		ScreenOverlayFade(redScreenOverlayObject, redScreenOverlayFadeType, redScreenOverlayFadeSpeed);
 
 		transform.position -= Velocity;
 
@@ -67,8 +75,8 @@ public class UserPlayer : Player
 			Mathf.Pow(LevelManager.LevelScale, 2))
 		{
 			GameObject zTileGO = zDirectionTile as GameObject;
-			float repelz = (zTileGO.transform.position - (Vector3.Project(zTileGO.transform.position - transform.position, Vector3.forward).normalized * LevelManager.LevelScale)).z;
-			//transform.position = new Vector3(transform.position.x, transform.position.y, repelz);
+			float repelZ = (zTileGO.transform.position - (Vector3.Project(zTileGO.transform.position - transform.position, Vector3.forward).normalized * LevelManager.LevelScale)).z;
+			//transform.position = new Vector3(transform.position.x, transform.position.y, repelZ);
 			Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.forward);
 		}
 
@@ -93,16 +101,6 @@ public class UserPlayer : Player
 		{
 			LevelManager.LoadNextLevel();
 		}
-
-		//
-		//Color col = redScreenOverlayObject.GetComponent<Renderer>().material.color;
-		//if (col.a >= 1.0f)
-		//	redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
-		//else if (col.a <= 0.0f)
-		//	redScreenOverlayFadeType = FADE_TYPE.FADE_IN;
-		//
-
-		ScreenOverlayFade(redScreenOverlayObject, redScreenOverlayFadeType, redScreenOverlayFadeSpeed);
 	}
 
 	public override void SetDestinationTarget(DestinationTarget destinationTarget)
@@ -131,5 +129,34 @@ public class UserPlayer : Player
 		Color col = screen.GetComponent<Renderer>().material.color;
 		float newAlpha = Mathf.Clamp(col.a + Time.deltaTime * (fadeType == FADE_TYPE.FADE_IN ? 1.0f : -1.0f) * fadeSpeed, 0.0f, 1.0f);
 		screen.GetComponent<Renderer>().material.color = new Color(col.r, col.g, col.b, newAlpha);
+	}
+
+	protected override void OnBecomeDetected()
+	{
+		if (backgroundMusicSource != null && DetectedBackgroundMusicClip != null)
+		{
+			backgroundMusicSource.clip = DetectedBackgroundMusicClip;
+			backgroundMusicSource.time = 36.7f;
+			backgroundMusicSource.Play();
+		}
+	}
+
+	protected override void OnBecomeUndetected()
+	{
+		if (backgroundMusicSource != null && UndetectedBackgroundMusicClip != null)
+		{
+			backgroundMusicSource.clip = UndetectedBackgroundMusicClip;
+			backgroundMusicSource.Play();
+		}
+		redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
+	}
+
+	protected override void HandleDetection()
+	{
+		Color col = redScreenOverlayObject.GetComponent<Renderer>().material.color;
+		if (col.a >= 1.0f)
+			redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
+		else if (col.a <= 0.25f)
+			redScreenOverlayFadeType = FADE_TYPE.FADE_IN;
 	}
 }

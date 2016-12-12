@@ -3,6 +3,21 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
+	public static Player MainPlayer = null;
+	public static int MainPlayerDetectionCount { get; private set; }
+
+	public static void DetectingMainPlayer()
+	{
+		if (MainPlayerDetectionCount < 1 && ++MainPlayerDetectionCount > 0)
+			MainPlayer.OnBecomeDetected();
+	}
+
+	public static void NotDetectingMainPlayer()
+	{
+		if (MainPlayerDetectionCount > 0 && (MainPlayerDetectionCount = Mathf.Max(0, MainPlayerDetectionCount - 1)) < 1)
+			MainPlayer.OnBecomeUndetected();
+	}
+
 	protected Vector3 Destination = Vector3.zero;
 	protected Stack<Vector3> NextDestinations = null;
 	protected GameObject Target = null;
@@ -17,6 +32,11 @@ public class Player : MonoBehaviour
 
 	protected virtual void Update()
 	{
+		if (this == MainPlayer && MainPlayerDetectionCount > 0)
+		{
+			HandleDetection();
+		}
+
 		Velocity = (Destination - transform.position).normalized * Speed * Time.deltaTime;
 
 		while (NextDestinations.Count > 0 && NextDestinations.Peek() == Destination)
@@ -78,4 +98,10 @@ public class Player : MonoBehaviour
 			oldTarget.SendMessage("Interact", gameObject);
 		}
 	}
+
+	protected virtual void OnBecomeDetected() { }
+
+	protected virtual void OnBecomeUndetected() { }
+
+	protected virtual void HandleDetection() { }
 }
