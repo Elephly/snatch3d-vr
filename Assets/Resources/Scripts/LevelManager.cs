@@ -247,5 +247,11 @@ public static class LevelManager
 	{
 		LoadLevel(LevelNumber + 1);
 	}
+
+	public static Vector3 LevelGridCoords(Vector3 coords)
+	{
+		Vector3 unscaledCoords = coords / LevelScale;
+		return new Vector3((int)unscaledCoords.x, (int)unscaledCoords.y, (int)unscaledCoords.z) * LevelScale;
+	}
 }
 

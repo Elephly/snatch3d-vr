@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Player : MonoBehaviour
+public abstract class Player : MonoBehaviour
 {
 	public static Player MainPlayer = null;
 	public static int MainPlayerDetectionCount { get; private set; }
@@ -62,9 +62,10 @@ public class Player : MonoBehaviour
 
 	public  virtual void SetDestinationTarget(DestinationTarget destinationTarget)
 	{
-		var path = PathFinder.Dijkstra(LevelManager.CurrentLevel, transform.position, destinationTarget.Destination);
+		List<Vector3> path = PathFinder.Dijkstra(LevelManager.CurrentLevel, transform.position, LevelManager.LevelGridCoords(destinationTarget.Destination));
 		path.Add(transform.position);
 		path = PathFinder.SmoothenPath(path);
+		path[0] = destinationTarget.Destination;
 		Destination = transform.position;
 		NextDestinations.Clear();
 		foreach (Vector3 point in path)
@@ -99,9 +100,9 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	protected virtual void OnBecomeDetected() { }
+	protected abstract void OnBecomeDetected();
 
-	protected virtual void OnBecomeUndetected() { }
+	protected abstract void OnBecomeUndetected();
 
-	protected virtual void HandleDetection() { }
+	protected abstract void HandleDetection();
 }

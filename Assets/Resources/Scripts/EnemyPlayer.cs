@@ -14,12 +14,15 @@ public class EnemyPlayer : Player
 		get
 		{
 			Vector3 playerDirection = MainPlayer.transform.position - transform.position;
+			float angleBetweenPlayerAndForward = Vector3.Angle(transform.forward, playerDirection);
 			RaycastHit hitInfo = new RaycastHit();
 			if (IsLightActive)
 				Physics.Raycast(transform.position, playerDirection, out hitInfo);
 			else
 				Physics.Raycast(transform.position, playerDirection, out hitInfo, LevelManager.LevelScale);
-			return (Vector3.Angle(transform.forward, playerDirection) < FieldOfView / 2.0f) && hitInfo.transform == MainPlayer.transform;
+			return (((angleBetweenPlayerAndForward < FieldOfView * 1.5f) && (playerDirection.sqrMagnitude < Mathf.Pow(LevelManager.LevelScale * 1.4f, 2.0f))) ||
+			        (angleBetweenPlayerAndForward < FieldOfView / 2.0f)) &&
+				(hitInfo.transform == MainPlayer.transform);
 		}
 	}
 
@@ -45,14 +48,19 @@ public class EnemyPlayer : Player
 		if (CanSeeMainPlayer)
 		{
 			if (!detectingMainPlayer)
+			{
 				Player.DetectingMainPlayer();
+			}
 			ChaseMainPlayer();
 			detectingMainPlayer = true;
 		}
 		else
 		{
 			if (detectingMainPlayer)
+			{
 				Player.NotDetectingMainPlayer();
+				VisitNextPatrolPathDestination();
+			}
 			detectingMainPlayer = false;
 		}
 		
@@ -156,5 +164,17 @@ public class EnemyPlayer : Player
 
 	void ChaseMainPlayer()
 	{
+		if (!detectingMainPlayer)
+		{
+			CurrentPatrolPathDestinationIndex--;
+		}
+		SetDestinationTarget(new DestinationTarget(MainPlayer.transform.position));
+		remainingRestTimeSeconds = 0.0f;
 	}
+
+	protected override void OnBecomeDetected() { }
+
+	protected override void OnBecomeUndetected() { }
+
+	protected override void HandleDetection() { }
 }
