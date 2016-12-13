@@ -135,9 +135,13 @@ public class UserPlayer : Player
 	{
 		if (backgroundMusicSource != null && DetectedBackgroundMusicClip != null)
 		{
-			backgroundMusicSource.clip = DetectedBackgroundMusicClip;
-			backgroundMusicSource.time = 36.7f;
-			backgroundMusicSource.Play();
+			if (backgroundMusicSource.clip != DetectedBackgroundMusicClip)
+				backgroundMusicSource.clip = DetectedBackgroundMusicClip;
+			if (!backgroundMusicSource.isPlaying)
+			{
+				backgroundMusicSource.time = 36.7f;
+				backgroundMusicSource.Play();
+			}
 		}
 	}
 
@@ -145,8 +149,10 @@ public class UserPlayer : Player
 	{
 		if (backgroundMusicSource != null && UndetectedBackgroundMusicClip != null)
 		{
-			backgroundMusicSource.clip = UndetectedBackgroundMusicClip;
-			backgroundMusicSource.Play();
+			if (backgroundMusicSource.clip != UndetectedBackgroundMusicClip)
+				backgroundMusicSource.clip = UndetectedBackgroundMusicClip;
+			if (!backgroundMusicSource.isPlaying)
+				backgroundMusicSource.Play();
 		}
 		redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
 	}

@@ -6,6 +6,12 @@ public abstract class Player : MonoBehaviour
 	public static Player MainPlayer = null;
 	public static int MainPlayerDetectionCount { get; private set; }
 
+	public static void Initialize()
+	{
+		MainPlayerDetectionCount = 0;
+		MainPlayer.OnBecomeUndetected();
+	}
+
 	public static void DetectingMainPlayer()
 	{
 		if (MainPlayerDetectionCount < 1 && ++MainPlayerDetectionCount > 0)

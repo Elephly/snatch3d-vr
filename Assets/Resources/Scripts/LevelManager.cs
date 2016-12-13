@@ -241,6 +241,8 @@ public static class LevelManager
 			Debug.LogException(new System.Exception("No player start position."));
 			Application.Quit();
 		}
+
+		Player.Initialize();
 	}
 
 	public static void LoadNextLevel()

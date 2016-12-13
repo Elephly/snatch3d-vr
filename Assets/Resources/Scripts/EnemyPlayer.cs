@@ -14,7 +14,7 @@ public class EnemyPlayer : Player
 		get
 		{
 			Vector3 playerDirection = MainPlayer.transform.position - transform.position;
-			float angleBetweenPlayerAndForward = Vector3.Angle(transform.forward, playerDirection);
+			float angleBetweenPlayerAndForward = Vector3.Angle(forward, playerDirection);
 			RaycastHit hitInfo = new RaycastHit();
 			if (IsLightActive)
 				Physics.Raycast(transform.position, playerDirection, out hitInfo);
@@ -28,9 +28,18 @@ public class EnemyPlayer : Player
 
 	Animator EnemyAnimator = null;
 	int CurrentPatrolPathDestinationIndex = -1;
+	Transform headNode = null;
 	float remainingRestTimeSeconds = 0.0f;
 	bool isResting = true;
 	bool detectingMainPlayer = false;
+
+	Vector3 forward
+	{
+		get
+		{
+			return headNode != null ? headNode.forward : transform.forward;
+		}
+	}
 
 	protected override void Awake()
 	{
@@ -39,6 +48,7 @@ public class EnemyPlayer : Player
 		LightSource = '-';
 		IsLightActive = true;
 		PatrolPath = new List<Vector3>();
+		headNode = transform.FindBreadthFirst("HeadNode");
 		RestTimeSeconds = 0.0f;
 		FieldOfView = 45.0f;
 	}
@@ -56,19 +66,12 @@ public class EnemyPlayer : Player
 		}
 		else
 		{
-			if (detectingMainPlayer)
+			if (detectingMainPlayer && !IsLightActive)
 			{
 				Player.NotDetectingMainPlayer();
-				if (IsLightActive)
-				{
-					VisitNextPatrolPathDestination();
-				}
-				else
-				{
-					HandleLightStateChanged();
-				}
+				HandleLightStateChanged();
+				detectingMainPlayer = false;
 			}
-			detectingMainPlayer = false;
 		}
 		
 		base.Update();
@@ -140,6 +143,11 @@ public class EnemyPlayer : Player
 	protected override void TargetReached()
 	{
 		base.TargetReached();
+		if (detectingMainPlayer)
+		{
+			Player.NotDetectingMainPlayer();
+			detectingMainPlayer = false;
+		}
 		VisitNextPatrolPathDestination();
 	}
 
@@ -174,7 +182,7 @@ public class EnemyPlayer : Player
 
 	void ChaseMainPlayer()
 	{
-		if (!detectingMainPlayer)
+		if (!detectingMainPlayer && IsLightActive)
 		{
 			CurrentPatrolPathDestinationIndex--;
 		}
