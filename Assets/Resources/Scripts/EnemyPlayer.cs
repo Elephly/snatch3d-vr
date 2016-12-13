@@ -59,7 +59,14 @@ public class EnemyPlayer : Player
 			if (detectingMainPlayer)
 			{
 				Player.NotDetectingMainPlayer();
-				VisitNextPatrolPathDestination();
+				if (IsLightActive)
+				{
+					VisitNextPatrolPathDestination();
+				}
+				else
+				{
+					HandleLightStateChanged();
+				}
 			}
 			detectingMainPlayer = false;
 		}
@@ -143,7 +150,10 @@ public class EnemyPlayer : Player
 		{
 			if (lightSwitch != null)
 			{
-				CurrentPatrolPathDestinationIndex--;
+				if (!detectingMainPlayer)
+				{
+					CurrentPatrolPathDestinationIndex--;
+				}
 				lightSwitch.SendMessage("Interact", gameObject);
 			}
 		}
