@@ -15,16 +15,19 @@ public class EnemyPlayer : Player
 		{
 			Vector3 playerDirection = MainPlayer.transform.position - transform.position;
 			float angleBetweenPlayerAndForward = Vector3.Angle(forward, playerDirection);
+			float fov = SearchingForMainPlayer ? FieldOfView * 2.0f : FieldOfView;
 			RaycastHit hitInfo = new RaycastHit();
 			if (IsLightActive)
 				Physics.Raycast(transform.position, playerDirection, out hitInfo);
 			else
 				Physics.Raycast(transform.position, playerDirection, out hitInfo, LevelManager.LevelScale);
-			return (((angleBetweenPlayerAndForward < FieldOfView * 1.5f) && (playerDirection.sqrMagnitude < Mathf.Pow(LevelManager.LevelScale * 1.4f, 2.0f))) ||
-			        (angleBetweenPlayerAndForward < FieldOfView / 2.0f)) &&
+			return (((angleBetweenPlayerAndForward < fov * 1.5f) && (playerDirection.sqrMagnitude < Mathf.Pow(LevelManager.LevelScale * 1.4f, 2.0f))) ||
+			        (angleBetweenPlayerAndForward < fov / 2.0f)) &&
 				(hitInfo.transform == MainPlayer.transform);
 		}
 	}
+
+	public bool SearchingForMainPlayer = false;
 
 	Animator EnemyAnimator = null;
 	int CurrentPatrolPathDestinationIndex = -1;
@@ -32,6 +35,7 @@ public class EnemyPlayer : Player
 	float remainingRestTimeSeconds = 0.0f;
 	bool isResting = true;
 	bool detectingMainPlayer = false;
+	bool wasSearchingForMainPlayer = false;
 
 	Vector3 forward
 	{
@@ -63,48 +67,59 @@ public class EnemyPlayer : Player
 			}
 			ChaseMainPlayer();
 			detectingMainPlayer = true;
+			SearchingForMainPlayer = false;
+			wasSearchingForMainPlayer = false;
 		}
-		else
+		else if (detectingMainPlayer && !IsLightActive)
 		{
-			if (detectingMainPlayer && !IsLightActive)
+			Player.NotDetectingMainPlayer();
+			HandleLightStateChanged();
+			detectingMainPlayer = false;
+		}
+
+		if (!SearchingForMainPlayer)
+		{
+			if (detectingMainPlayer && wasSearchingForMainPlayer)
 			{
 				Player.NotDetectingMainPlayer();
-				HandleLightStateChanged();
+				VisitNextPatrolPathDestination();
 				detectingMainPlayer = false;
 			}
-		}
-		
-		base.Update();
 
-		if (remainingRestTimeSeconds > 0.0f || transform.position == Destination)
-		{
-			if (!isResting)
+			base.Update();
+
+			if (remainingRestTimeSeconds > 0.0f || transform.position == Destination)
 			{
-				EnemyAnimator.Play("EasyAngryTuxedoEnemyIdleAnimation");
-				isResting = true;
+				if (!isResting)
+				{
+					EnemyAnimator.Play("EasyAngryTuxedoEnemyIdleAnimation");
+					isResting = true;
+				}
 			}
-		}
-		else
-		{
-			if (isResting)
+			else
 			{
-				EnemyAnimator.Play("EasyAngryTuxedoEnemyWalkAnimation");
-				isResting = false;
+				if (isResting)
+				{
+					EnemyAnimator.Play("EasyAngryTuxedoEnemyWalkAnimation");
+					isResting = false;
+				}
+			}
+
+			if (remainingRestTimeSeconds > 0.0f)
+			{
+				transform.position -= Velocity;
+				remainingRestTimeSeconds -= Time.deltaTime;
+			}
+			else
+			{
+				if (Destination != transform.position)
+				{
+					transform.forward = Destination - transform.position;
+				}
 			}
 		}
 
-		if (remainingRestTimeSeconds > 0.0f)
-		{
-			transform.position -= Velocity;
-			remainingRestTimeSeconds -= Time.deltaTime;
-		}
-		else
-		{
-			if (Destination != transform.position)
-			{
-				transform.forward = Destination - transform.position;
-			}
-		}
+		wasSearchingForMainPlayer = SearchingForMainPlayer;
 	}
 
 	public void SetPatrolPath(List<Vector3> patrolPath)
@@ -145,10 +160,12 @@ public class EnemyPlayer : Player
 		base.TargetReached();
 		if (detectingMainPlayer)
 		{
-			Player.NotDetectingMainPlayer();
-			detectingMainPlayer = false;
+			EnemyAnimator.Play("EasyAngryTuxedoEnemySearchingAnimation");
 		}
-		VisitNextPatrolPathDestination();
+		else
+		{
+			VisitNextPatrolPathDestination();
+		}
 	}
 
 	void HandleLightStateChanged()
