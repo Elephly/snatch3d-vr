@@ -24,11 +24,18 @@ public class Door : Obstruction
 		return !IsDoorOpen;
 	}
 
+	GameObject spaceTile = null;
+
 	void Awake()
 	{
 		DoorAnimator = GetComponent<Animator>();
 		UnlockSwitch = null;
 		doorAudioSource = transform.GetComponentInChildren<GvrAudioSource>();
+	}
+
+	void Start()
+	{
+		spaceTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)(transform.position.z / LevelManager.LevelScale), (int)(transform.position.x / LevelManager.LevelScale)) as GameObject;
 	}
 
 	void Update()
@@ -49,6 +56,14 @@ public class Door : Obstruction
 		else
 		{
 			wasTransitioning = DoorAnimator.IsPlaying();
+		}
+
+		if (spaceTile != null)
+		{
+			if (IsDoorOpen)
+				spaceTile.tag = "SpaceTile";
+			else
+				spaceTile.tag = "WallTile";
 		}
 	}
 
