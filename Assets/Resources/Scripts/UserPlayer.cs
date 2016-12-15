@@ -14,6 +14,7 @@ public class UserPlayer : Player
 	public AudioClip UndetectedBackgroundMusicClip = null;
 	public AudioClip DetectedBackgroundMusicClip = null;
 	public AudioClip NextLevelAudioClip = null;
+	public AudioClip GameOverAudioClip = null;
 
 	AudioSource backgroundMusicSource = null;
 	AudioSource soundEffectAudioSource = null;
@@ -24,7 +25,7 @@ public class UserPlayer : Player
 	FADE_TYPE blackScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
 	FADE_TYPE redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
 	float whiteScreenOverlayFadeSpeed = 0.5f;
-	float blackScreenOverlayFadeSpeed = 3.0f;
+	float blackScreenOverlayFadeSpeed = 2.5f;
 	float redScreenOverlayFadeSpeed = 1.5f;
 	GvrAudioSource footStepsAudioSource = null;
 	float lastFootStepElapsedTimeSeconds = footStepInitialOffset;
@@ -74,67 +75,80 @@ public class UserPlayer : Player
 		ScreenOverlayFade(blackScreenOverlayObject, blackScreenOverlayFadeType, blackScreenOverlayFadeSpeed);
 		ScreenOverlayFade(redScreenOverlayObject, redScreenOverlayFadeType, redScreenOverlayFadeSpeed);
 
-		transform.position -= Velocity;
-
-		Vector3 playerTileLocationUnrounded = transform.position / LevelManager.LevelScale;
-		Vector3 playerTileLocation = new Vector3(Mathf.Round(playerTileLocationUnrounded.x), Mathf.Round(playerTileLocationUnrounded.y), Mathf.Round(playerTileLocationUnrounded.z));
-		Vector3 xDirectionTileLocationUnrounded = playerTileLocation + Vector3.Project(Velocity, Vector3.right).normalized;
-		Vector3 xDirectionTileLocation = new Vector3(xDirectionTileLocationUnrounded.x, xDirectionTileLocationUnrounded.y, xDirectionTileLocationUnrounded.z);
-		object xDirectionTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)xDirectionTileLocation.z, (int)xDirectionTileLocation.x);
-		Vector3 zDirectionTileLocationUnrounded = playerTileLocation + Vector3.Project(Velocity, Vector3.forward).normalized;
-		Vector3 zDirectionTileLocation = new Vector3(zDirectionTileLocationUnrounded.x, zDirectionTileLocationUnrounded.y, zDirectionTileLocationUnrounded.z);
-		object zDirectionTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)zDirectionTileLocation.z, (int)zDirectionTileLocation.x);
-
-		if (xDirectionTile is GameObject && !(xDirectionTile as GameObject).CompareTag("SpaceTile") &&
-			Vector3.Project((xDirectionTile as GameObject).transform.position - transform.position, Vector3.right).sqrMagnitude <=
-			Mathf.Pow(LevelManager.LevelScale, 2))
+		if (!mainPlayerCaught)
 		{
-			//GameObject xTileGO = xDirectionTile as GameObject;
-			//float repelX = (xTileGO.transform.position - (Vector3.Project(xTileGO.transform.position - transform.position, Vector3.right).normalized * LevelManager.LevelScale)).x;
-			//transform.position = new Vector3(repelX, transform.position.y, transform.position.z);
-			Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.right);
-		}
+			transform.position -= Velocity;
 
-		if (zDirectionTile is GameObject && !(zDirectionTile as GameObject).CompareTag("SpaceTile") &&
-			Vector3.Project((zDirectionTile as GameObject).transform.position - transform.position, Vector3.forward).sqrMagnitude <=
-			Mathf.Pow(LevelManager.LevelScale, 2))
-		{
-			//GameObject zTileGO = zDirectionTile as GameObject;
-			//float repelZ = (zTileGO.transform.position - (Vector3.Project(zTileGO.transform.position - transform.position, Vector3.forward).normalized * LevelManager.LevelScale)).z;
-			//transform.position = new Vector3(transform.position.x, transform.position.y, repelZ);
-			Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.forward);
-		}
+			Vector3 playerTileLocationUnrounded = transform.position / LevelManager.LevelScale;
+			Vector3 playerTileLocation = new Vector3(Mathf.Round(playerTileLocationUnrounded.x), Mathf.Round(playerTileLocationUnrounded.y), Mathf.Round(playerTileLocationUnrounded.z));
+			Vector3 xDirectionTileLocationUnrounded = playerTileLocation + Vector3.Project(Velocity, Vector3.right).normalized;
+			Vector3 xDirectionTileLocation = new Vector3(xDirectionTileLocationUnrounded.x, xDirectionTileLocationUnrounded.y, xDirectionTileLocationUnrounded.z);
+			object xDirectionTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)xDirectionTileLocation.z, (int)xDirectionTileLocation.x);
+			Vector3 zDirectionTileLocationUnrounded = playerTileLocation + Vector3.Project(Velocity, Vector3.forward).normalized;
+			Vector3 zDirectionTileLocation = new Vector3(zDirectionTileLocationUnrounded.x, zDirectionTileLocationUnrounded.y, zDirectionTileLocationUnrounded.z);
+			object zDirectionTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)zDirectionTileLocation.z, (int)zDirectionTileLocation.x);
 
-		if ((Destination - transform.position).sqrMagnitude <= Mathf.Pow(0.725f * LevelManager.LevelScale, 2))
-		{
-			DestinationReached();
-			lastFootStepElapsedTimeSeconds = footStepInitialOffset;
-		}
-		else
-		{
-			if (lastFootStepElapsedTimeSeconds >= footStepIntervalSeconds && !footStepsAudioSource.isPlaying)
+			if (xDirectionTile is GameObject && !(xDirectionTile as GameObject).CompareTag("SpaceTile") &&
+				Vector3.Project((xDirectionTile as GameObject).transform.position - transform.position, Vector3.right).sqrMagnitude <=
+				Mathf.Pow(LevelManager.LevelScale, 2))
 			{
-				footStepsAudioSource.Play();
-				lastFootStepElapsedTimeSeconds = 0.0f;
+				//GameObject xTileGO = xDirectionTile as GameObject;
+				//float repelX = (xTileGO.transform.position - (Vector3.Project(xTileGO.transform.position - transform.position, Vector3.right).normalized * LevelManager.LevelScale)).x;
+				//transform.position = new Vector3(repelX, transform.position.y, transform.position.z);
+				Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.right);
 			}
-			lastFootStepElapsedTimeSeconds += Time.deltaTime;
+
+			if (zDirectionTile is GameObject && !(zDirectionTile as GameObject).CompareTag("SpaceTile") &&
+				Vector3.Project((zDirectionTile as GameObject).transform.position - transform.position, Vector3.forward).sqrMagnitude <=
+				Mathf.Pow(LevelManager.LevelScale, 2))
+			{
+				//GameObject zTileGO = zDirectionTile as GameObject;
+				//float repelZ = (zTileGO.transform.position - (Vector3.Project(zTileGO.transform.position - transform.position, Vector3.forward).normalized * LevelManager.LevelScale)).z;
+				//transform.position = new Vector3(transform.position.x, transform.position.y, repelZ);
+				Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.forward);
+			}
+
+			if ((Destination - transform.position).sqrMagnitude <= Mathf.Pow(0.725f * LevelManager.LevelScale, 2))
+			{
+				DestinationReached();
+				lastFootStepElapsedTimeSeconds = footStepInitialOffset;
+			}
+			else
+			{
+				if (lastFootStepElapsedTimeSeconds >= footStepIntervalSeconds && !footStepsAudioSource.isPlaying)
+				{
+					footStepsAudioSource.Play();
+					lastFootStepElapsedTimeSeconds = 0.0f;
+				}
+				lastFootStepElapsedTimeSeconds += Time.deltaTime;
+			}
+
+			transform.position += Velocity;
+
+			if ((transform.position - LevelManager.CurrentLevel.GoalLocation).sqrMagnitude < Mathf.Pow(0.5f * LevelManager.LevelScale, 2.0f))
+			{
+				whiteScreenOverlayFadeType = FADE_TYPE.FADE_IN;
+				Color col = whiteScreenOverlayObject.GetComponent<Renderer>().material.color;
+				if (col.a >= 1.0f)
+				{
+					soundEffectAudioSource.PlayOneShot(NextLevelAudioClip);
+					LevelManager.LoadNextLevel();
+				}
+			}
+			else
+			{
+				whiteScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
+		}
 		}
 
-		transform.position += Velocity;
-
-		if ((transform.position - LevelManager.CurrentLevel.GoalLocation).sqrMagnitude < 0.25f * LevelManager.LevelScale)
+		if (blackScreenOverlayFadeType == FADE_TYPE.FADE_IN)
 		{
-			whiteScreenOverlayFadeType = FADE_TYPE.FADE_IN;
-			Color col = whiteScreenOverlayObject.GetComponent<Renderer>().material.color;
+			Color col = blackScreenOverlayObject.GetComponent<Renderer>().material.color;
 			if (col.a >= 1.0f)
 			{
-				soundEffectAudioSource.PlayOneShot(NextLevelAudioClip);
-				LevelManager.LoadNextLevel();
+				LevelManager.LoadLevel(LevelManager.LevelNumber);
+				blackScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
 			}
-		}
-		else
-		{
-			whiteScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
 		}
 	}
 
@@ -199,5 +213,12 @@ public class UserPlayer : Player
 			redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
 		else if (col.a <= 0.25f)
 			redScreenOverlayFadeType = FADE_TYPE.FADE_IN;
+	}
+
+	public override void HandleGameOver()
+	{
+		base.HandleGameOver();
+		blackScreenOverlayFadeType = FADE_TYPE.FADE_IN;
+		soundEffectAudioSource.PlayOneShot(GameOverAudioClip);
 	}
 }

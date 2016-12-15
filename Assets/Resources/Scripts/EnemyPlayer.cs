@@ -77,7 +77,7 @@ public class EnemyPlayer : Player
 			detectingMainPlayer = false;
 		}
 
-		if (!SearchingForMainPlayer)
+		if (!SearchingForMainPlayer && !mainPlayerCaught)
 		{
 			if (detectingMainPlayer && wasSearchingForMainPlayer)
 			{
@@ -116,6 +116,12 @@ public class EnemyPlayer : Player
 				{
 					transform.forward = Destination - transform.position;
 				}
+			}
+
+
+			if (this != MainPlayer && (transform.position - MainPlayer.transform.position).sqrMagnitude < Mathf.Pow(0.6f * LevelManager.LevelScale, 2.0f))
+			{
+				MainPlayer.HandleGameOver();
 			}
 		}
 

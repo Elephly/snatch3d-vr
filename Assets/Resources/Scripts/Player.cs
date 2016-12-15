@@ -5,11 +5,13 @@ public abstract class Player : MonoBehaviour
 {
 	public static Player MainPlayer = null;
 	public static int MainPlayerDetectionCount { get; private set; }
+	protected static bool mainPlayerCaught = false;
 
 	public static void Initialize()
 	{
 		MainPlayerDetectionCount = 0;
 		MainPlayer.OnBecomeUndetected();
+		mainPlayerCaught = false;
 	}
 
 	public static void DetectingMainPlayer()
@@ -38,24 +40,27 @@ public abstract class Player : MonoBehaviour
 
 	protected virtual void Update()
 	{
-		if (this == MainPlayer && MainPlayerDetectionCount > 0)
+		if (!mainPlayerCaught)
 		{
-			HandleDetection();
+			if (this == MainPlayer && MainPlayerDetectionCount > 0)
+			{
+				HandleDetection();
+			}
+
+			Velocity = (Destination - transform.position).normalized * Speed * Time.deltaTime;
+
+			while (NextDestinations.Count > 0 && NextDestinations.Peek() == Destination)
+			{
+				NextDestinations.Pop();
+			}
+
+			if ((Destination - transform.position).sqrMagnitude <= Velocity.sqrMagnitude)
+			{
+				DestinationReached();
+			}
+
+			transform.position += Velocity;
 		}
-
-		Velocity = (Destination - transform.position).normalized * Speed * Time.deltaTime;
-
-		while (NextDestinations.Count > 0 && NextDestinations.Peek() == Destination)
-		{
-			NextDestinations.Pop();
-		}
-
-		if ((Destination - transform.position).sqrMagnitude <= Velocity.sqrMagnitude)
-		{
-			DestinationReached();
-		}
-
-		transform.position += Velocity;
 	}
 
 	public void SetPosition(Vector3 position)
@@ -111,4 +116,9 @@ public abstract class Player : MonoBehaviour
 	protected abstract void OnBecomeUndetected();
 
 	protected abstract void HandleDetection();
+
+	public virtual void HandleGameOver()
+	{
+		mainPlayerCaught = true;
+	}
 }
