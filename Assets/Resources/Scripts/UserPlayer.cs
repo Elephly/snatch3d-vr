@@ -13,10 +13,18 @@ public class UserPlayer : Player
 
 	public AudioClip UndetectedBackgroundMusicClip = null;
 	public AudioClip DetectedBackgroundMusicClip = null;
+	public AudioClip NextLevelAudioClip = null;
 
 	AudioSource backgroundMusicSource = null;
+	AudioSource soundEffectAudioSource = null;
+	GameObject whiteScreenOverlayObject = null;
+	GameObject blackScreenOverlayObject = null;
 	GameObject redScreenOverlayObject = null;
+	FADE_TYPE whiteScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
+	FADE_TYPE blackScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
 	FADE_TYPE redScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
+	float whiteScreenOverlayFadeSpeed = 0.5f;
+	float blackScreenOverlayFadeSpeed = 3.0f;
 	float redScreenOverlayFadeSpeed = 1.5f;
 	GvrAudioSource footStepsAudioSource = null;
 	float lastFootStepElapsedTimeSeconds = footStepInitialOffset;
@@ -25,6 +33,21 @@ public class UserPlayer : Player
 	{
 		base.Awake();
 		backgroundMusicSource = GetComponent<AudioSource>();
+		soundEffectAudioSource = transform.FindBreadthFirst("SoundEffects").GetComponent<AudioSource>();
+		Transform whiteScreenOverlay = transform.FindBreadthFirst("WhiteScreenOverlay");
+		if (whiteScreenOverlay != null)
+		{
+			whiteScreenOverlayObject = whiteScreenOverlay.gameObject;
+			Color col = whiteScreenOverlayObject.GetComponent<Renderer>().material.color;
+			whiteScreenOverlayObject.GetComponent<Renderer>().material.color = new Color(col.r, col.g, col.b, 0.0f);
+		}
+		Transform blackScreenOverlay = transform.FindBreadthFirst("BlackScreenOverlay");
+		if (blackScreenOverlay != null)
+		{
+			blackScreenOverlayObject = blackScreenOverlay.gameObject;
+			Color col = blackScreenOverlayObject.GetComponent<Renderer>().material.color;
+			blackScreenOverlayObject.GetComponent<Renderer>().material.color = new Color(col.r, col.g, col.b, 0.0f);
+		}
 		Transform redScreenOverlay = transform.FindBreadthFirst("RedScreenOverlay");
 		if (redScreenOverlay != null)
 		{
@@ -47,6 +70,8 @@ public class UserPlayer : Player
 	{
 		base.Update();
 
+		ScreenOverlayFade(whiteScreenOverlayObject, whiteScreenOverlayFadeType, whiteScreenOverlayFadeSpeed);
+		ScreenOverlayFade(blackScreenOverlayObject, blackScreenOverlayFadeType, blackScreenOverlayFadeSpeed);
 		ScreenOverlayFade(redScreenOverlayObject, redScreenOverlayFadeType, redScreenOverlayFadeSpeed);
 
 		transform.position -= Velocity;
@@ -64,8 +89,8 @@ public class UserPlayer : Player
 			Vector3.Project((xDirectionTile as GameObject).transform.position - transform.position, Vector3.right).sqrMagnitude <=
 			Mathf.Pow(LevelManager.LevelScale, 2))
 		{
-			GameObject xTileGO = xDirectionTile as GameObject;
-			float repelX = (xTileGO.transform.position - (Vector3.Project(xTileGO.transform.position - transform.position, Vector3.right).normalized * LevelManager.LevelScale)).x;
+			//GameObject xTileGO = xDirectionTile as GameObject;
+			//float repelX = (xTileGO.transform.position - (Vector3.Project(xTileGO.transform.position - transform.position, Vector3.right).normalized * LevelManager.LevelScale)).x;
 			//transform.position = new Vector3(repelX, transform.position.y, transform.position.z);
 			Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.right);
 		}
@@ -74,8 +99,8 @@ public class UserPlayer : Player
 			Vector3.Project((zDirectionTile as GameObject).transform.position - transform.position, Vector3.forward).sqrMagnitude <=
 			Mathf.Pow(LevelManager.LevelScale, 2))
 		{
-			GameObject zTileGO = zDirectionTile as GameObject;
-			float repelZ = (zTileGO.transform.position - (Vector3.Project(zTileGO.transform.position - transform.position, Vector3.forward).normalized * LevelManager.LevelScale)).z;
+			//GameObject zTileGO = zDirectionTile as GameObject;
+			//float repelZ = (zTileGO.transform.position - (Vector3.Project(zTileGO.transform.position - transform.position, Vector3.forward).normalized * LevelManager.LevelScale)).z;
 			//transform.position = new Vector3(transform.position.x, transform.position.y, repelZ);
 			Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.forward);
 		}
@@ -99,7 +124,17 @@ public class UserPlayer : Player
 
 		if ((transform.position - LevelManager.CurrentLevel.GoalLocation).sqrMagnitude < 0.25f * LevelManager.LevelScale)
 		{
-			LevelManager.LoadNextLevel();
+			whiteScreenOverlayFadeType = FADE_TYPE.FADE_IN;
+			Color col = whiteScreenOverlayObject.GetComponent<Renderer>().material.color;
+			if (col.a >= 1.0f)
+			{
+				soundEffectAudioSource.PlayOneShot(NextLevelAudioClip);
+				LevelManager.LoadNextLevel();
+			}
+		}
+		else
+		{
+			whiteScreenOverlayFadeType = FADE_TYPE.FADE_OUT;
 		}
 	}
 
