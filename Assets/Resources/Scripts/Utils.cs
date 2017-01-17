@@ -1,9 +1,7 @@
 ﻿public static class Utils
 {
-
 	public static class Path
 	{
-
 		public static string Combine(params string[] paths)
 		{
 			string path = null;
@@ -13,7 +11,8 @@
 				{
 					path = p;
 				}
-				else {
+				else
+				{
 					path = System.IO.Path.Combine(path, p);
 				}
 			}
