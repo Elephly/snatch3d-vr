@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpaceTile : MonoBehaviour, IGvrGazeResponder
+public class SpaceTile : ObjectBase, IGvrGazeResponder
 {
 
 	//GameObject CeilingTile = null;
 	GameObject FloorTile = null;
 	GameObject SpotLight = null;
+
+    Material FloorTileMaterial = null;
 
 	public char LightSource { get; private set; }
 	public bool IsLightActive
@@ -17,18 +19,22 @@ public class SpaceTile : MonoBehaviour, IGvrGazeResponder
 		}
 	}
 
-	void Awake()
+	protected override void Awake()
 	{
-		//Transform ceiling = transform.Find ("CeilingTile");
+        base.Awake();
+		//Transform ceiling = TransformCached.Find ("CeilingTile");
 		//if (ceiling != null) {
 		//	CeilingTile = ceiling.gameObject;
 		//}
-		Transform floor = transform.Find("FloorTile");
+		Transform floor = TransformCached.Find("FloorTile");
 		if (floor != null)
 		{
 			FloorTile = floor.gameObject;
+            Renderer FloorTileRenderer = FloorTile.GetComponent<Renderer>();
+            if (FloorTileRenderer != null)
+                FloorTileMaterial = FloorTileRenderer.material;
 		}
-		Transform light = transform.Find("SpotLight");
+		Transform light = TransformCached.Find("SpotLight");
 		if (light != null)
 		{
 			SpotLight = light.gameObject;
@@ -59,21 +65,24 @@ public class SpaceTile : MonoBehaviour, IGvrGazeResponder
 
 	public void SetGazedAt(bool gazedAt)
 	{
-		if (!LevelManager.CurrentLevel.HasObstruction(transform.position))
-		{
-			FloorTile.GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
-		}
-		else
-		{
-			FloorTile.GetComponent<Renderer>().material.color = Color.white;
-		}
+        if (FloorTileMaterial != null)
+        {
+            if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position))
+            {
+                FloorTileMaterial.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
+            }
+            else
+            {
+                FloorTileMaterial.color = Color.white;
+            }
+        }
 	}
 
 	public void SetPlayerDestination()
 	{
-		if (!LevelManager.CurrentLevel.HasObstruction(transform.position))
+		if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position))
 		{
-			Camera.main.SendMessage("SetDestinationTarget", new DestinationTarget(transform.position));
+			Camera.main.SendMessage("SetDestinationTarget", new DestinationTarget(TransformCached.position));
 		}
 	}
 

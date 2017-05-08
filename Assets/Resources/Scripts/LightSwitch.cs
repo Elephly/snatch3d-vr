@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class LightSwitch : MonoBehaviour, IGvrGazeResponder
+public class LightSwitch : ObjectBase, IGvrGazeResponder
 {
 
 	Animator LightSwitchAnimator = null;
+    Material LightSwitchBaseMaterial = null;
+    Material LightSwitchSwitchMaterial = null;
 	Color LightSwitchBaseColor = Color.white;
 	Color LightSwitchSwitchColor = Color.white;
 	GameObject LightSwitchBase = null;
@@ -19,20 +20,31 @@ public class LightSwitch : MonoBehaviour, IGvrGazeResponder
 		}
 	}
 
-	void Awake()
+	protected override void Awake()
 	{
+        base.Awake();
 		LightSwitchAnimator = GetComponent<Animator>();
-		Transform lBase = transform.FindBreadthFirst("Base");
+		Transform lBase = TransformCached.FindBreadthFirst("Base");
 		if (lBase != null)
 		{
 			LightSwitchBase = lBase.gameObject;
-			LightSwitchBaseColor = LightSwitchBase.GetComponent<Renderer>().material.color;
+            Renderer LightSwitchBaseRenderer = LightSwitchBase.GetComponent<Renderer>();
+            if (LightSwitchBaseRenderer != null)
+            {
+                LightSwitchBaseMaterial = LightSwitchBaseRenderer.material;
+                LightSwitchBaseColor = LightSwitchBaseMaterial.color;
+            }
 		}
-		Transform lSwitch = transform.FindBreadthFirst("Switch");
+		Transform lSwitch = TransformCached.FindBreadthFirst("Switch");
 		if (lSwitch != null)
 		{
 			LightSwitchSwitch = lSwitch.gameObject;
-			LightSwitchSwitchColor = LightSwitchSwitch.GetComponent<Renderer>().material.color;
+            Renderer LightSwitchSwitchRenderer = LightSwitchSwitch.GetComponent<Renderer>();
+            if (LightSwitchSwitchRenderer != null)
+            {
+                LightSwitchSwitchMaterial = LightSwitchSwitchRenderer.material;
+                LightSwitchSwitchColor = LightSwitchSwitchMaterial.color;
+            }
 		}
 	}
 
@@ -43,8 +55,10 @@ public class LightSwitch : MonoBehaviour, IGvrGazeResponder
 
 	public void SetGazedAt(bool gazedAt)
 	{
-		LightSwitchBase.GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, LightSwitchBaseColor, 0.5f) : LightSwitchBaseColor;
-		LightSwitchSwitch.GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, LightSwitchSwitchColor, 0.5f) : LightSwitchSwitchColor;
+        if (LightSwitchBaseMaterial != null)
+            LightSwitchBaseMaterial.color = gazedAt ? Color.Lerp(Color.green, LightSwitchBaseColor, 0.5f) : LightSwitchBaseColor;
+        if (LightSwitchSwitchMaterial != null)
+            LightSwitchSwitchMaterial.color = gazedAt ? Color.Lerp(Color.green, LightSwitchSwitchColor, 0.5f) : LightSwitchSwitchColor;
 	}
 
 	public void ToggleLightSwitch()
@@ -62,15 +76,15 @@ public class LightSwitch : MonoBehaviour, IGvrGazeResponder
 
 	public void Interact(GameObject sender)
 	{
-		if ((sender.transform.position - transform.position).sqrMagnitude <= 4.0f)
+		if ((sender.transform.position - TransformCached.position).sqrMagnitude <= 4.0f)
 		{
 			ToggleLightSwitch();
 		}
 		else
 		{
-			if (!LevelManager.CurrentLevel.HasObstruction(transform.position))
+			if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position))
 			{
-				sender.SendMessage("SetDestinationTarget", new DestinationTarget(transform.position, gameObject));
+				sender.SendMessage("SetDestinationTarget", new DestinationTarget(TransformCached.position, gameObject));
 			}
 		}
 	}

@@ -1,31 +1,40 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class WallTileSurface : MonoBehaviour, IGvrGazeResponder
+public class WallTileSurface : ObjectBase, IGvrGazeResponder
 {
-	void Awake()
-	{
+    Transform wallTransform = null;
+    Material material = null;
 
-	}
+    protected override void Awake()
+    {
+        base.Awake();
+        wallTransform = TransformCached.parent;
+        Renderer myRenderer = GetComponent<Renderer>();
+        if (myRenderer != null)
+            material = myRenderer.material;
+    }
 
-	public void SetGazedAt(bool gazedAt)
+    public void SetGazedAt(bool gazedAt)
 	{
-		if (!LevelManager.CurrentLevel.HasObstruction(transform.position + (transform.position - transform.parent.position)))
-		{
-			GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
-		}
-		else
-		{
-			GetComponent<Renderer>().material.color = Color.white;
-		}
+        if (material != null)
+        {
+            if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position + (TransformCached.position - wallTransform.position)))
+            {
+                material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
+            }
+            else
+            {
+                material.color = Color.white;
+            }
+        }
 			
 	}
 
 	public void SetPlayerDestination()
 	{
-		if (!LevelManager.CurrentLevel.HasObstruction(transform.position + (transform.position - transform.parent.position)))
+		if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position + (TransformCached.position - wallTransform.position)))
 		{
-			Camera.main.SendMessage("SetDestinationTarget", new DestinationTarget(transform.position + (transform.position - transform.parent.position)));
+			Camera.main.SendMessage("SetDestinationTarget", new DestinationTarget(TransformCached.position + (TransformCached.position - wallTransform.position)));
 		}
 	}
 

@@ -1,14 +1,21 @@
 ﻿using UnityEngine;
 
-public class MainMenu : MonoBehaviour, IGvrGazeResponder
+public class MainMenu : ObjectBase, IGvrGazeResponder
 {
 	public Camera mainCamera;
-	
-	// Update is called once per frame
-	void Update ()
+    public Transform mainCameraTransform;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        if (mainCamera != null)
+            mainCameraTransform = mainCamera.transform;
+    }
+
+    void Update ()
 	{
-		transform.position = mainCamera.transform.position;
-		transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, mainCamera.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+		TransformCached.position = mainCameraTransform.position;
+		TransformCached.rotation = Quaternion.Euler(TransformCached.rotation.eulerAngles.x, mainCameraTransform.rotation.eulerAngles.y, TransformCached.rotation.eulerAngles.z);
 	}
 
 	public void ToggleVRMode()

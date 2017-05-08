@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RectangularPrism : MonoBehaviour
+public class RectangularPrism : ObjectBase
 {
 
 	public uint XQuads = 1;
@@ -33,8 +33,9 @@ public class RectangularPrism : MonoBehaviour
 	public Vector2 RightTextureOffset = Vector2.zero;
 
 	// Use this for initialization
-	void Awake()
+	protected override void Awake()
 	{
+        base.Awake();
 		for (int i = 0; i < XQuads; i++)
 		{
 			for (int j = 0; j < YQuads; j++)
@@ -44,21 +45,23 @@ public class RectangularPrism : MonoBehaviour
 				Material frontMaterial = frontChildQuad.GetComponent<Renderer>().material;
 				Material backMaterial = backChildQuad.GetComponent<Renderer>().material;
 
+                Transform frontChildQuadTransform = frontChildQuad.transform;
+                Transform backChildQuadTransform = backChildQuad.transform;
 
-				frontChildQuad.transform.parent = transform;
-				backChildQuad.transform.parent = transform;
+                frontChildQuadTransform.parent = TransformCached;
+				backChildQuadTransform.parent = TransformCached;
 
-				frontChildQuad.transform.localPosition = new Vector3(-(((float)XQuads) / 2.0f) + (float)i,
+				frontChildQuadTransform.localPosition = new Vector3(-(((float)XQuads) / 2.0f) + (float)i,
 					-(((float)YQuads) / 2.0f) + (float)j,
 					((float)ZQuads) / 2.0f) + new Vector3(0.5f, 0.5f, 0.0f);
-				frontChildQuad.transform.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-				frontChildQuad.transform.localScale = Vector3.one;
+				frontChildQuadTransform.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+				frontChildQuadTransform.localScale = Vector3.one;
 
-				backChildQuad.transform.localPosition = new Vector3(-(((float)XQuads) / 2.0f) + (float)i,
+				backChildQuadTransform.localPosition = new Vector3(-(((float)XQuads) / 2.0f) + (float)i,
 					-(((float)YQuads) / 2.0f) + (float)j,
 					-((float)ZQuads) / 2.0f) + new Vector3(0.5f, 0.5f, 0.0f);
-				backChildQuad.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-				backChildQuad.transform.localScale = Vector3.one;
+				backChildQuadTransform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+				backChildQuadTransform.localScale = Vector3.one;
 
 				if (FrontTexture)
 				{
@@ -83,20 +86,23 @@ public class RectangularPrism : MonoBehaviour
 				Material topMaterial = topChildQuad.GetComponent<Renderer>().material;
 				Material bottomMaterial = bottomChildQuad.GetComponent<Renderer>().material;
 
-				topChildQuad.transform.parent = transform;
-				bottomChildQuad.transform.parent = transform;
+                Transform topChildQuadTransform = topChildQuad.transform;
+                Transform bottomChildQuadTransform = bottomChildQuad.transform;
 
-				topChildQuad.transform.localPosition = new Vector3(-(((float)XQuads) / 2.0f) + (float)i,
+                topChildQuadTransform.parent = TransformCached;
+				bottomChildQuadTransform.parent = TransformCached;
+
+				topChildQuadTransform.localPosition = new Vector3(-(((float)XQuads) / 2.0f) + (float)i,
 					((float)YQuads) / 2.0f,
 					-(((float)ZQuads) / 2.0f) + (float)j) + new Vector3(0.5f, 0.0f, 0.5f);
-				topChildQuad.transform.localRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
-				topChildQuad.transform.localScale = Vector3.one;
+				topChildQuadTransform.localRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
+				topChildQuadTransform.localScale = Vector3.one;
 
-				bottomChildQuad.transform.localPosition = new Vector3(-(((float)XQuads) / 2.0f) + (float)i,
+				bottomChildQuadTransform.localPosition = new Vector3(-(((float)XQuads) / 2.0f) + (float)i,
 					-((float)YQuads) / 2.0f,
 					-(((float)ZQuads) / 2.0f) + (float)j) + new Vector3(0.5f, 0.0f, 0.5f);
-				bottomChildQuad.transform.localRotation = Quaternion.Euler(-90.0f, 0.0f, 0.0f);
-				bottomChildQuad.transform.localScale = Vector3.one;
+				bottomChildQuadTransform.localRotation = Quaternion.Euler(-90.0f, 0.0f, 0.0f);
+				bottomChildQuadTransform.localScale = Vector3.one;
 
 				if (TopTexture)
 				{
@@ -121,20 +127,23 @@ public class RectangularPrism : MonoBehaviour
 				Material leftMaterial = leftChildQuad.GetComponent<Renderer>().material;
 				Material rightMaterial = rightChildQuad.GetComponent<Renderer>().material;
 
-				leftChildQuad.transform.parent = transform;
-				rightChildQuad.transform.parent = transform;
+                Transform leftChildQuadTransform = leftChildQuad.transform;
+                Transform rightChildQuadTransform = rightChildQuad.transform;
+                
+                leftChildQuadTransform.parent = TransformCached;
+                rightChildQuadTransform.parent = TransformCached;
 
-				leftChildQuad.transform.localPosition = new Vector3(-((float)XQuads) / 2.0f,
+				leftChildQuadTransform.localPosition = new Vector3(-((float)XQuads) / 2.0f,
 					-(((float)YQuads) / 2.0f) + (float)i,
 					-(((float)ZQuads) / 2.0f) + (float)j) + new Vector3(0.0f, 0.5f, 0.5f);
-				leftChildQuad.transform.localRotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
-				leftChildQuad.transform.localScale = Vector3.one;
+				leftChildQuadTransform.localRotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+				leftChildQuadTransform.localScale = Vector3.one;
 
-				rightChildQuad.transform.localPosition = new Vector3(((float)XQuads) / 2.0f,
+				rightChildQuadTransform.localPosition = new Vector3(((float)XQuads) / 2.0f,
 					-(((float)YQuads) / 2.0f) + (float)i,
 					-(((float)ZQuads) / 2.0f) + (float)j) + new Vector3(0.0f, 0.5f, 0.5f);
-				rightChildQuad.transform.localRotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
-				rightChildQuad.transform.localScale = Vector3.one;
+				rightChildQuadTransform.localRotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
+				rightChildQuadTransform.localScale = Vector3.one;
 
 				if (LeftTexture)
 				{

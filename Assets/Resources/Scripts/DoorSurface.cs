@@ -4,20 +4,23 @@ public class DoorSurface : ObjectBase, IGvrGazeResponder
 {
 	Transform doorTransform = null;
     Door door = null;
-    Renderer myRenderer = null;
+    Material material = null;
 
 	protected override void Awake()
 	{
         base.Awake();
         doorTransform = TransformCached.parent.parent;
         door = doorTransform.GetComponent<Door>();
-        myRenderer = GetComponent<Renderer>();
+        Renderer myRenderer = GetComponent<Renderer>();
+        if (myRenderer != null)
+            material = myRenderer.material;
+        
 	}
 
 	public void SetGazedAt(bool gazedAt)
 	{
-        if (myRenderer != null)
-		    myRenderer.material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
+        if (material != null)
+		    material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
 	}
 
 	public void Interact(GameObject sender)

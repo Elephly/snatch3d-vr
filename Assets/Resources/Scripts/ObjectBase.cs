@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ObjectBase : MonoBehaviour
+public abstract class ObjectBase : MonoBehaviour
 {
     public Transform TransformCached = null;
 
