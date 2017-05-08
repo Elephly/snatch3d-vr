@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-
-public abstract class Obstruction : MonoBehaviour
+﻿public abstract class Obstruction : ObjectBase
 {
-
 	public abstract bool IsObstructing();
 }

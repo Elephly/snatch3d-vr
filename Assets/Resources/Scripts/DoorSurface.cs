@@ -1,33 +1,38 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class DoorSurface : MonoBehaviour, IGvrGazeResponder
+public class DoorSurface : ObjectBase, IGvrGazeResponder
 {
-	Transform rootParent = null;
+	Transform doorTransform = null;
+    Door door = null;
+    Renderer myRenderer = null;
 
-	void Awake()
+	protected override void Awake()
 	{
-		rootParent = transform.parent.parent;
+        base.Awake();
+        doorTransform = TransformCached.parent.parent;
+        door = doorTransform.GetComponent<Door>();
+        myRenderer = GetComponent<Renderer>();
 	}
 
 	public void SetGazedAt(bool gazedAt)
 	{
-		GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
+        if (myRenderer != null)
+		    myRenderer.material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
 	}
 
 	public void Interact(GameObject sender)
 	{
-		Vector3 positionWithRootY = new Vector3(transform.position.x, rootParent.position.y, transform.position.z);
-		Vector3 positionBeforeDoor = rootParent.position + ((positionWithRootY - rootParent.position) * (2.0f / 0.75f));
+		Vector3 positionWithRootY = new Vector3(TransformCached.position.x, doorTransform.position.y, TransformCached.position.z);
+		Vector3 positionBeforeDoor = doorTransform.position + ((positionWithRootY - doorTransform.position) * (2.0f / 0.75f));
 		if ((sender.transform.position - positionBeforeDoor).sqrMagnitude <= 4.0f)
 		{
-			rootParent.gameObject.SendMessage("Interact", sender);
+			door.Interact(sender);
 		}
 		else
 		{
 			if (!LevelManager.CurrentLevel.HasObstruction(positionBeforeDoor))
 			{
-				sender.SendMessage("SetDestinationTarget", new DestinationTarget(positionBeforeDoor, rootParent.gameObject));
+				sender.SendMessage("SetDestinationTarget", new DestinationTarget(positionBeforeDoor, doorTransform.gameObject));
 			}
 		}
 	}

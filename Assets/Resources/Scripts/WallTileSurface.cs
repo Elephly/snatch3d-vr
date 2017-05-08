@@ -3,7 +3,6 @@ using System.Collections;
 
 public class WallTileSurface : MonoBehaviour, IGvrGazeResponder
 {
-
 	void Awake()
 	{
 

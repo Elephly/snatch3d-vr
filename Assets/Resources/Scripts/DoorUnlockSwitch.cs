@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class DoorUnlockSwitch : MonoBehaviour
+public class DoorUnlockSwitch : ObjectBase
 {
 
 	Animator DoorUnlockSwitchAnimator = null;
-	Color DoorUnlockSwitchBaseColor = Color.white;
+    Renderer DoorUnlockSwitchBaseRenderer = null;
+    Renderer DoorUnlockSwitchTopArmRenderer = null;
+    Renderer DoorUnlockSwitchLeftArmRenderer = null;
+    Renderer DoorUnlockSwitchRightArmRenderer = null;
+    Color DoorUnlockSwitchBaseColor = Color.white;
 	Color DoorUnlockSwitchTopArmColor = Color.white;
 	Color DoorUnlockSwitchLeftArmColor = Color.white;
 	Color DoorUnlockSwitchRightArmColor = Color.white;
@@ -16,41 +19,54 @@ public class DoorUnlockSwitch : MonoBehaviour
 
 	public bool IsLocked = true;
 
-	void Awake()
+	protected override void Awake()
 	{
+        base.Awake();
 		DoorUnlockSwitchAnimator = GetComponent<Animator>();
-		Transform switchBase = transform.FindBreadthFirst("Base");
+		Transform switchBase = TransformCached.FindBreadthFirst("Base");
 		if (switchBase != null)
 		{
 			DoorUnlockSwitchBase = switchBase.gameObject;
-			DoorUnlockSwitchBaseColor = DoorUnlockSwitchBase.GetComponent<Renderer>().material.color;
+            DoorUnlockSwitchBaseRenderer = DoorUnlockSwitchBase.GetComponent<Renderer>();
+            if (DoorUnlockSwitchBaseRenderer != null)
+                DoorUnlockSwitchBaseColor = DoorUnlockSwitchBaseRenderer.material.color;
 		}
-		Transform switchTopArm = transform.FindBreadthFirst("TopArm");
+		Transform switchTopArm = TransformCached.FindBreadthFirst("TopArm");
 		if (switchTopArm != null)
 		{
 			DoorUnlockSwitchTopArm = switchTopArm.gameObject;
-			DoorUnlockSwitchTopArmColor = DoorUnlockSwitchTopArm.GetComponent<Renderer>().material.color;
+            DoorUnlockSwitchTopArmRenderer = DoorUnlockSwitchTopArm.GetComponent<Renderer>();
+            if (DoorUnlockSwitchTopArmRenderer != null)
+                DoorUnlockSwitchTopArmColor = DoorUnlockSwitchTopArmRenderer.material.color;
 		}
-		Transform switchLeftArm = transform.FindBreadthFirst("LeftArm");
+		Transform switchLeftArm = TransformCached.FindBreadthFirst("LeftArm");
 		if (switchLeftArm != null)
 		{
 			DoorUnlockSwitchLeftArm = switchLeftArm.gameObject;
-			DoorUnlockSwitchLeftArmColor = DoorUnlockSwitchLeftArm.GetComponent<Renderer>().material.color;
+            DoorUnlockSwitchLeftArmRenderer = DoorUnlockSwitchLeftArm.GetComponent<Renderer>();
+            if (DoorUnlockSwitchLeftArmRenderer != null)
+                DoorUnlockSwitchLeftArmColor = DoorUnlockSwitchLeftArmRenderer.material.color;
 		}
-		Transform switchRightArm = transform.FindBreadthFirst("RightArm");
+		Transform switchRightArm = TransformCached.FindBreadthFirst("RightArm");
 		if (switchRightArm != null)
 		{
 			DoorUnlockSwitchRightArm = switchRightArm.gameObject;
-			DoorUnlockSwitchRightArmColor = DoorUnlockSwitchRightArm.GetComponent<Renderer>().material.color;
+            DoorUnlockSwitchRightArmRenderer = DoorUnlockSwitchRightArm.GetComponent<Renderer>();
+            if (DoorUnlockSwitchRightArmRenderer != null)
+                DoorUnlockSwitchRightArmColor = DoorUnlockSwitchRightArmRenderer.material.color;
 		}
-	}
+    }
 
 	public void SetGazedAt(bool gazedAt)
-	{
-		DoorUnlockSwitchBase.GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, DoorUnlockSwitchBaseColor, 0.5f) : DoorUnlockSwitchBaseColor;
-		DoorUnlockSwitchTopArm.GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, DoorUnlockSwitchTopArmColor, 0.5f) : DoorUnlockSwitchTopArmColor;
-		DoorUnlockSwitchLeftArm.GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, DoorUnlockSwitchLeftArmColor, 0.5f) : DoorUnlockSwitchLeftArmColor;
-		DoorUnlockSwitchRightArm.GetComponent<Renderer>().material.color = gazedAt ? Color.Lerp(Color.green, DoorUnlockSwitchRightArmColor, 0.5f) : DoorUnlockSwitchRightArmColor;
+    {
+        if (DoorUnlockSwitchBaseRenderer != null)
+            DoorUnlockSwitchBaseRenderer.material.color = gazedAt ? Color.Lerp(Color.green, DoorUnlockSwitchBaseColor, 0.5f) : DoorUnlockSwitchBaseColor;
+        if (DoorUnlockSwitchTopArmRenderer != null)
+            DoorUnlockSwitchTopArmRenderer.material.color = gazedAt ? Color.Lerp(Color.green, DoorUnlockSwitchTopArmColor, 0.5f) : DoorUnlockSwitchTopArmColor;
+        if (DoorUnlockSwitchLeftArmRenderer != null)
+            DoorUnlockSwitchLeftArmRenderer.material.color = gazedAt ? Color.Lerp(Color.green, DoorUnlockSwitchLeftArmColor, 0.5f) : DoorUnlockSwitchLeftArmColor;
+        if (DoorUnlockSwitchRightArmRenderer != null)
+            DoorUnlockSwitchRightArmRenderer.material.color = gazedAt ? Color.Lerp(Color.green, DoorUnlockSwitchRightArmColor, 0.5f) : DoorUnlockSwitchRightArmColor;
 	}
 
 	public void ToggleDoorUnlockSwitch()
@@ -66,15 +82,15 @@ public class DoorUnlockSwitch : MonoBehaviour
 
 	public void Interact(GameObject sender)
 	{
-		if ((sender.transform.position - transform.position).sqrMagnitude <= 4.0f)
+		if ((sender.transform.position - TransformCached.position).sqrMagnitude <= 4.0f)
 		{
 			ToggleDoorUnlockSwitch();
 		}
 		else
 		{
-			if (!LevelManager.CurrentLevel.HasObstruction(transform.position))
+			if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position))
 			{
-				sender.SendMessage("SetDestinationTarget", new DestinationTarget(transform.position, gameObject));
+				sender.SendMessage("SetDestinationTarget", new DestinationTarget(TransformCached.position, gameObject));
 			}
 		}
 	}

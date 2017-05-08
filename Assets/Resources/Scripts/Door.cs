@@ -26,16 +26,17 @@ public class Door : Obstruction
 
 	GameObject spaceTile = null;
 
-	void Awake()
+	protected override void Awake()
 	{
+        base.Awake();
 		DoorAnimator = GetComponent<Animator>();
 		UnlockSwitch = null;
-		doorAudioSource = transform.GetComponentInChildren<GvrAudioSource>();
+		doorAudioSource = TransformCached.GetComponentInChildren<GvrAudioSource>();
 	}
 
 	void Start()
 	{
-		spaceTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)(transform.position.z / LevelManager.LevelScale), (int)(transform.position.x / LevelManager.LevelScale)) as GameObject;
+		spaceTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)(TransformCached.position.z / LevelManager.LevelScale), (int)(TransformCached.position.x / LevelManager.LevelScale)) as GameObject;
 	}
 
 	void Update()

@@ -13,17 +13,17 @@ public class EnemyPlayer : Player
 	{
 		get
 		{
-			Vector3 playerDirection = MainPlayer.transform.position - transform.position;
+			Vector3 playerDirection = MainPlayer.TransformCached.position - TransformCached.position;
 			float angleBetweenPlayerAndForward = Vector3.Angle(forward, playerDirection);
 			float fov = SearchingForMainPlayer ? FieldOfView * 2.0f : FieldOfView;
 			RaycastHit hitInfo = new RaycastHit();
 			if (IsLightActive)
-				Physics.Raycast(transform.position, playerDirection, out hitInfo);
+				Physics.Raycast(TransformCached.position, playerDirection, out hitInfo);
 			else
-				Physics.Raycast(transform.position, playerDirection, out hitInfo, LevelManager.LevelScale);
+				Physics.Raycast(TransformCached.position, playerDirection, out hitInfo, LevelManager.LevelScale);
 			return (((angleBetweenPlayerAndForward < fov * 1.5f) && (playerDirection.sqrMagnitude < Mathf.Pow(LevelManager.LevelScale * 1.4f, 2.0f))) ||
 			        (angleBetweenPlayerAndForward < fov / 2.0f)) &&
-				(hitInfo.transform == MainPlayer.transform);
+				(hitInfo.transform == MainPlayer.TransformCached);
 		}
 	}
 
@@ -41,7 +41,7 @@ public class EnemyPlayer : Player
 	{
 		get
 		{
-			return headNode != null ? headNode.forward : transform.forward;
+			return headNode != null ? headNode.forward : TransformCached.forward;
 		}
 	}
 
@@ -52,7 +52,7 @@ public class EnemyPlayer : Player
 		LightSource = '-';
 		IsLightActive = true;
 		PatrolPath = new List<Vector3>();
-		headNode = transform.FindBreadthFirst("HeadNode");
+		headNode = TransformCached.FindBreadthFirst("HeadNode");
 		RestTimeSeconds = 0.0f;
 		FieldOfView = 45.0f;
 	}
@@ -88,7 +88,7 @@ public class EnemyPlayer : Player
 
 			base.Update();
 
-			if (remainingRestTimeSeconds > 0.0f || transform.position == Destination)
+			if (remainingRestTimeSeconds > 0.0f || TransformCached.position == Destination)
 			{
 				if (!isResting)
 				{
@@ -107,19 +107,19 @@ public class EnemyPlayer : Player
 
 			if (remainingRestTimeSeconds > 0.0f)
 			{
-				transform.position -= Velocity;
+				TransformCached.position -= Velocity;
 				remainingRestTimeSeconds -= Time.deltaTime;
 			}
 			else
 			{
-				if (Destination != transform.position)
+				if (Destination != TransformCached.position)
 				{
-					transform.forward = Destination - transform.position;
+					TransformCached.forward = Destination - TransformCached.position;
 				}
 			}
 
 
-			if (this != MainPlayer && (transform.position - MainPlayer.transform.position).sqrMagnitude < Mathf.Pow(0.6f * LevelManager.LevelScale, 2.0f))
+			if (this != MainPlayer && (TransformCached.position - MainPlayer.TransformCached.position).sqrMagnitude < Mathf.Pow(0.6f * LevelManager.LevelScale, 2.0f))
 			{
 				MainPlayer.HandleGameOver();
 			}
@@ -209,7 +209,7 @@ public class EnemyPlayer : Player
 		{
 			CurrentPatrolPathDestinationIndex--;
 		}
-		SetDestinationTarget(new DestinationTarget(MainPlayer.transform.position));
+		SetDestinationTarget(new DestinationTarget(MainPlayer.TransformCached.position));
 		remainingRestTimeSeconds = 0.0f;
 	}
 
