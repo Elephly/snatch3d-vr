@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class Level
@@ -8,49 +7,48 @@ public class Level
 	public Vector3 GoalLocation { get; set; }
 
 	// Strong references
-	public ArrayList LevelGrid { get; private set; }
-	public ArrayList LevelEnvironmentObjects { get; set; }
-	public ArrayList LevelEnemies { get; set; }
+	public List<List<AbstractGameObject>> LevelGrid { get; private set; }
+	public List<AbstractGameObject> LevelEnvironmentObjects { get; set; }
+	public List<EnemyPlayer> LevelEnemies { get; set; }
 
 	// Weak references
-	public Dictionary<char, GameObject> LightSourceMap { get; set; }
-	public Dictionary<char, ArrayList> LightSourceListenerMap { get; set; }
+	public Dictionary<char, LightSwitch> LightSourceMap { get; set; }
+	public Dictionary<char, List<ILightSourceListener>> LightSourceListenerMap { get; set; }
 	public Dictionary<Vector3, Obstruction> ObstructionMap { get; set; }
 
 	public Level(float levelScale)
 	{
 		LevelScale = levelScale;
 		GoalLocation = Vector3.zero;
-		LevelGrid = new ArrayList();
-		LevelEnvironmentObjects = new ArrayList();
-		LevelEnemies = new ArrayList();
-		LightSourceMap = new Dictionary<char, GameObject>();
-		LightSourceListenerMap = new Dictionary<char, ArrayList>();
+		LevelGrid = new List<List<AbstractGameObject>>();
+		LevelEnvironmentObjects = new List<AbstractGameObject>();
+		LevelEnemies = new List<EnemyPlayer>();
+		LightSourceMap = new Dictionary<char, LightSwitch>();
+		LightSourceListenerMap = new Dictionary<char, List<ILightSourceListener>>();
 		ObstructionMap = new Dictionary<Vector3, Obstruction>();
 	}
 
 	public void Destroy()
 	{
-
-		foreach (ArrayList row in LevelGrid)
+		foreach (var row in LevelGrid)
 		{
-			foreach (Object obj in row)
+			foreach (var obj in row)
 			{
-				MonoBehaviour.Destroy(obj);
+				MonoBehaviour.Destroy(obj.gameObject);
 			}
 			row.Clear();
 		}
 		LevelGrid.Clear();
 
-		foreach (Object obj in LevelEnvironmentObjects)
+		foreach (var obj in LevelEnvironmentObjects)
 		{
-			MonoBehaviour.Destroy(obj);
+			MonoBehaviour.Destroy(obj.gameObject);
 		}
 		LevelEnvironmentObjects.Clear();
 
-		foreach (Object obj in LevelEnemies)
+		foreach (var obj in LevelEnemies)
 		{
-			MonoBehaviour.Destroy(obj);
+			MonoBehaviour.Destroy(obj.gameObject);
 		}
 		LevelEnemies.Clear();
 
@@ -59,28 +57,26 @@ public class Level
 		LightSourceListenerMap.Clear();
 
 		ObstructionMap.Clear();
+    }
+
+	public void AddRow(List<AbstractGameObject> row)
+	{
+		LevelGrid.Add(row);
 	}
 
-	public int AddRow(ArrayList row)
+	public void AddToRow(int row, AbstractGameObject value)
 	{
-
-		return LevelGrid.Add(row);
+		LevelGrid[row].Add(value);
 	}
 
-	public int AddToRow(int row, object value)
+	public Object GetGameObjectAtRowColumnIndex(int row, int column)
 	{
-
-		return (LevelGrid[row] as ArrayList).Add(value);
-	}
-
-	public object GetGameObjectAtRowColumnIndex(int row, int column)
-	{
-		object go = null;
+		Object go = null;
 		int rowCount = LevelGrid.Count;
 
-		if (row >= 0 && column >= 0 && rowCount > row && LevelGrid[rowCount - 1 - row] is ArrayList && (LevelGrid[rowCount - 1 - row] as ArrayList).Count > column)
+		if (row >= 0 && column >= 0 && rowCount > row && LevelGrid[rowCount - 1 - row] != null && LevelGrid[rowCount - 1 - row].Count > column)
 		{
-			go = (LevelGrid[rowCount - 1 - row] as ArrayList)[column];
+			go = LevelGrid[rowCount - 1 - row][column];
 		}
 		return go;
 	}
@@ -95,21 +91,20 @@ public class Level
 
 		if (LightSourceListenerMap.ContainsKey(lightSource))
 		{
-			foreach (GameObject lightSourceListener in LightSourceListenerMap[lightSource])
+			foreach (ILightSourceListener lightSourceListener in LightSourceListenerMap[lightSource])
 			{
-				lightSourceListener.SendMessage("SetLightActive", state);
+				lightSourceListener.SetLightActive(state);
 			}
 		}
 	}
 
 	public void ToggleLight(char lightSource)
 	{
-
 		if (LightSourceListenerMap.ContainsKey(lightSource))
 		{
-			foreach (GameObject lightSourceListener in LightSourceListenerMap[lightSource])
+			foreach (ILightSourceListener lightSourceListener in LightSourceListenerMap[lightSource])
 			{
-				lightSourceListener.SendMessage("ToggleLight");
+				lightSourceListener.ToggleLight();
 			}
 		}
 	}

@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RectangularPrism : ObjectBase
+public class RectangularPrism : AbstractGameObject
 {
-
 	public uint XQuads = 1;
 	public uint YQuads = 1;
 	public uint ZQuads = 1;

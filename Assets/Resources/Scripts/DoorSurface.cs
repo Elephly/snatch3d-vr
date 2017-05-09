@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class DoorSurface : ObjectBase, IGvrGazeResponder
+public class DoorSurface : AbstractGameObject, IGvrGazeResponder
 {
 	Transform doorTransform = null;
     Door door = null;
@@ -23,11 +23,11 @@ public class DoorSurface : ObjectBase, IGvrGazeResponder
 		    material.color = gazedAt ? Color.Lerp(Color.green, Color.white, 0.5f) : Color.white;
 	}
 
-	public void Interact(GameObject sender)
+	public void Interact(Player sender)
 	{
 		Vector3 positionWithRootY = new Vector3(TransformCached.position.x, doorTransform.position.y, TransformCached.position.z);
 		Vector3 positionBeforeDoor = doorTransform.position + ((positionWithRootY - doorTransform.position) * (2.0f / 0.75f));
-		if ((sender.transform.position - positionBeforeDoor).sqrMagnitude <= 4.0f)
+		if ((sender.TransformCached.position - positionBeforeDoor).sqrMagnitude <= 4.0f)
 		{
 			door.Interact(sender);
 		}
@@ -35,7 +35,7 @@ public class DoorSurface : ObjectBase, IGvrGazeResponder
 		{
 			if (!LevelManager.CurrentLevel.HasObstruction(positionBeforeDoor))
 			{
-				sender.SendMessage("SetDestinationTarget", new DestinationTarget(positionBeforeDoor, doorTransform.gameObject));
+				sender.SetDestinationTarget(new DestinationTarget(positionBeforeDoor, door));
 			}
 		}
 	}
@@ -59,7 +59,7 @@ public class DoorSurface : ObjectBase, IGvrGazeResponder
 	/// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
 	public void OnGazeTrigger()
 	{
-		Interact(Camera.main.gameObject);
+		Interact(Player.MainPlayer);
 	}
 
 	#endregion

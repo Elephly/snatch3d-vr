@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class EnemyPlayer : Player
+public class EnemyPlayer : Player, ILightSourceListener
 {
 	public char LightSource { get; private set; }
 	public bool IsLightActive { get; private set; }
@@ -139,8 +139,8 @@ public class EnemyPlayer : Player
 	}
 
 	public void SetLightSource(char lightSource)
-	{
-		LightSource = lightSource;
+    {
+        LightSource = lightSource;
 	}
 
 	public void SetLightActive(bool state)
@@ -176,22 +176,22 @@ public class EnemyPlayer : Player
 
 	void HandleLightStateChanged()
 	{
-		GameObject lightSwitch = LevelManager.CurrentLevel.LightSourceMap[LightSource];
-		if (!IsLightActive && LightSource != '-')
-		{
-			if (lightSwitch != null)
-			{
-				if (!detectingMainPlayer)
-				{
-					CurrentPatrolPathDestinationIndex--;
-				}
-				lightSwitch.SendMessage("Interact", gameObject);
-			}
-		}
-		else if (Target == lightSwitch)
-		{
-			VisitNextPatrolPathDestination();
-		}
+		LightSwitch lightSwitch = LevelManager.CurrentLevel.LightSourceMap[LightSource];
+        if (lightSwitch != null)
+        {
+            if (!IsLightActive && LightSource != '-')
+            {
+                if (!detectingMainPlayer)
+                {
+                    CurrentPatrolPathDestinationIndex--;
+                }
+                lightSwitch.Interact(this);
+            }
+            else if (Target as AbstractGameObject == lightSwitch)
+            {
+                VisitNextPatrolPathDestination();
+            }
+        }
 	}
 
 	void VisitNextPatrolPathDestination()

@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
-public class DoorUnlockSwitch : ObjectBase
+public class DoorUnlockSwitch : AbstractGameObject, IInteractive
 {
-
 	Animator DoorUnlockSwitchAnimator = null;
     Material DoorUnlockSwitchBaseMaterial = null;
     Material DoorUnlockSwitchTopArmMaterial = null;
@@ -92,9 +91,9 @@ public class DoorUnlockSwitch : ObjectBase
 		}
 	}
 
-	public void Interact(GameObject sender)
+	public void Interact(Player sender)
 	{
-		if ((sender.transform.position - TransformCached.position).sqrMagnitude <= 4.0f)
+		if ((sender.TransformCached.position - TransformCached.position).sqrMagnitude <= 4.0f)
 		{
 			ToggleDoorUnlockSwitch();
 		}
@@ -102,7 +101,7 @@ public class DoorUnlockSwitch : ObjectBase
 		{
 			if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position))
 			{
-				sender.SendMessage("SetDestinationTarget", new DestinationTarget(TransformCached.position, gameObject));
+				sender.SetDestinationTarget(new DestinationTarget(TransformCached.position, this));
 			}
 		}
 	}
@@ -126,7 +125,7 @@ public class DoorUnlockSwitch : ObjectBase
 	/// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
 	public void OnGazeTrigger()
 	{
-		Interact(Camera.main.gameObject);
+		Interact(Player.MainPlayer);
 	}
 
 	#endregion

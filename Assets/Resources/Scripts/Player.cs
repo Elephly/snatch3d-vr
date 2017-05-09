@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class Player : ObjectBase
+public abstract class Player : AbstractGameObject
 {
 	public static Player MainPlayer = null;
 	public static int MainPlayerDetectionCount { get; private set; }
@@ -28,7 +28,7 @@ public abstract class Player : ObjectBase
 
 	protected Vector3 Destination = Vector3.zero;
 	protected Stack<Vector3> NextDestinations = null;
-	protected GameObject Target = null;
+	protected IInteractive Target = null;
 	protected Vector3 Velocity = Vector3.zero;
 
 	float Speed = 3.0f;
@@ -106,9 +106,9 @@ public abstract class Player : ObjectBase
 		TransformCached.position = Destination;
 		if (Target != null)
 		{
-			GameObject oldTarget = Target;
+			IInteractive oldTarget = Target;
 			Target = null;
-			oldTarget.SendMessage("Interact", gameObject);
+			oldTarget.Interact(this);
 		}
 	}
 

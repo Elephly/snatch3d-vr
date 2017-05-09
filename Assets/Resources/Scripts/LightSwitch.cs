@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
-public class LightSwitch : ObjectBase, IGvrGazeResponder
+public class LightSwitch : AbstractGameObject, IGvrGazeResponder, IInteractive
 {
-
 	Animator LightSwitchAnimator = null;
     Material LightSwitchBaseMaterial = null;
     Material LightSwitchSwitchMaterial = null;
@@ -49,8 +48,8 @@ public class LightSwitch : ObjectBase, IGvrGazeResponder
 	}
 
 	public void SetLightSource(char lightSource)
-	{
-		LightSource = lightSource;
+    {
+        LightSource = lightSource;
 	}
 
 	public void SetGazedAt(bool gazedAt)
@@ -74,9 +73,9 @@ public class LightSwitch : ObjectBase, IGvrGazeResponder
 		}
 	}
 
-	public void Interact(GameObject sender)
+	public void Interact(Player sender)
 	{
-		if ((sender.transform.position - TransformCached.position).sqrMagnitude <= 4.0f)
+		if ((sender.TransformCached.position - TransformCached.position).sqrMagnitude <= 4.0f)
 		{
 			ToggleLightSwitch();
 		}
@@ -84,7 +83,7 @@ public class LightSwitch : ObjectBase, IGvrGazeResponder
 		{
 			if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position))
 			{
-				sender.SendMessage("SetDestinationTarget", new DestinationTarget(TransformCached.position, gameObject));
+				sender.SetDestinationTarget(new DestinationTarget(TransformCached.position, this));
 			}
 		}
 	}
@@ -108,7 +107,7 @@ public class LightSwitch : ObjectBase, IGvrGazeResponder
 	/// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
 	public void OnGazeTrigger()
 	{
-		Interact(Camera.main.gameObject);
+		Interact(Player.MainPlayer);
 	}
 
 	#endregion

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public static class PathFinder
@@ -29,32 +28,32 @@ public static class PathFinder
 		orig.y = Mathf.Round(orig.y);
 		orig.z = Mathf.Round(orig.z);
 		orig *= level.LevelScale;
-		Dictionary<Vector3, GameObject> positionObjectMap = new Dictionary<Vector3, GameObject>();
+		Dictionary<Vector3, AbstractGameObject> positionObjectMap = new Dictionary<Vector3, AbstractGameObject>();
 		Dictionary<Vector3, float> distances = new Dictionary<Vector3, float>();
-		Dictionary<Vector3, GameObject> previousPositions = new Dictionary<Vector3, GameObject>();
+		Dictionary<Vector3, AbstractGameObject> previousPositions = new Dictionary<Vector3, AbstractGameObject>();
 		Dictionary<Vector3, List<Vector3>> edges = new Dictionary<Vector3, List<Vector3>>();
 		SortedList<float, List<Vector3>> queue = new SortedList<float, List<Vector3>>();
 
-		foreach (ArrayList row in level.LevelGrid)
+		foreach (var row in level.LevelGrid)
 		{
-			foreach (GameObject tile in row)
+			foreach (var tile in row)
 			{
 				if (tile.tag == "SpaceTile")
 				{
-					positionObjectMap[tile.transform.position] = tile;
-					distances[tile.transform.position] = float.PositiveInfinity;
-					previousPositions[tile.transform.position] = null;
+					positionObjectMap[tile.TransformCached.position] = tile;
+					distances[tile.TransformCached.position] = float.PositiveInfinity;
+					previousPositions[tile.TransformCached.position] = null;
 					queue[float.PositiveInfinity] = new List<Vector3>();
-					queue[float.PositiveInfinity].Add(tile.transform.position);
+					queue[float.PositiveInfinity].Add(tile.TransformCached.position);
 				}
 			}
 		}
 
-		foreach (ArrayList row in level.LevelGrid)
+		foreach (var row in level.LevelGrid)
 		{
-			foreach (GameObject tile in row)
+			foreach (var tile in row)
 			{
-				Vector3 tilePosition = tile.transform.position;
+				Vector3 tilePosition = tile.TransformCached.position;
 				Vector3 tileForwardPosition = tilePosition + new Vector3(0.0f, 0.0f, level.LevelScale);
 				Vector3 tileBackwardPosition = tilePosition + new Vector3(0.0f, 0.0f, -level.LevelScale);
 				Vector3 tileLeftPosition = tilePosition + new Vector3(-level.LevelScale, 0.0f, 0.0f);
@@ -124,7 +123,7 @@ public static class PathFinder
 
 		if (previousPositions.ContainsKey(destination))
 		{
-			for (Vector3 nextDest = destination; previousPositions[nextDest] != null; nextDest = previousPositions[nextDest].transform.position)
+			for (Vector3 nextDest = destination; previousPositions[nextDest] != null; nextDest = previousPositions[nextDest].TransformCached.position)
 			{
 				path.Add(nextDest);
 			}

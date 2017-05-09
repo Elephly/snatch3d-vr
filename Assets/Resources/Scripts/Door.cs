@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Door : Obstruction
+public class Door : Obstruction, IInteractive
 {
 	Animator DoorAnimator = null;
 	GvrAudioSource doorAudioSource = null;
@@ -99,7 +99,7 @@ public class Door : Obstruction
 		}
 	}
 
-	public void Interact(GameObject sender)
+	public void Interact(Player sender)
 	{
 		ToggleDoorState();
 	}

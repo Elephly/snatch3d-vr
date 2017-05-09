@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class MainMenu : ObjectBase, IGvrGazeResponder
+public class MainMenu : AbstractGameObject, IGvrGazeResponder
 {
 	public Camera mainCamera;
     public Transform mainCameraTransform;

@@ -1,3 +1,3 @@
-﻿public class WallTile : ObjectBase
+﻿public class WallTile : AbstractGameObject
 {
 }

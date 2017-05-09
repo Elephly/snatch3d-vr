@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class WallTileSurface : ObjectBase, IGvrGazeResponder
+public class WallTileSurface : AbstractGameObject, IGvrGazeResponder
 {
     Transform wallTransform = null;
     Material material = null;
@@ -27,14 +27,13 @@ public class WallTileSurface : ObjectBase, IGvrGazeResponder
                 material.color = Color.white;
             }
         }
-			
 	}
 
 	public void SetPlayerDestination()
 	{
 		if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position + (TransformCached.position - wallTransform.position)))
 		{
-			Camera.main.SendMessage("SetDestinationTarget", new DestinationTarget(TransformCached.position + (TransformCached.position - wallTransform.position)));
+			Player.MainPlayer.SetDestinationTarget(new DestinationTarget(TransformCached.position + (TransformCached.position - wallTransform.position)));
 		}
 	}
 

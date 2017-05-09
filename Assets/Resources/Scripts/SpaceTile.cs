@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpaceTile : ObjectBase, IGvrGazeResponder
+public class SpaceTile : AbstractGameObject, IGvrGazeResponder, ILightSourceListener
 {
-
 	//GameObject CeilingTile = null;
 	GameObject FloorTile = null;
 	GameObject SpotLight = null;
@@ -82,7 +81,7 @@ public class SpaceTile : ObjectBase, IGvrGazeResponder
 	{
 		if (!LevelManager.CurrentLevel.HasObstruction(TransformCached.position))
 		{
-			Camera.main.SendMessage("SetDestinationTarget", new DestinationTarget(TransformCached.position));
+			Player.MainPlayer.SetDestinationTarget(new DestinationTarget(TransformCached.position));
 		}
 	}
 

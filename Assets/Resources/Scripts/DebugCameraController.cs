@@ -3,7 +3,6 @@ using System.Collections;
 
 public class DebugCameraController : MonoBehaviour
 {
-
 	private float speed = 2f;
 
 	// Update is called once per frame

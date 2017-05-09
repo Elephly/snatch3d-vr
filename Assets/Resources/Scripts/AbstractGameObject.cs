@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class ObjectBase : MonoBehaviour
+public abstract class AbstractGameObject : MonoBehaviour
 {
     public Transform TransformCached = null;
 
