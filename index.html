@@ -13,6 +13,46 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
+    <script>
+      var request = new XMLHttpRequest();
+      request.open('GET', 'https://api.github.com/repos/nicholaschiasson/snatch3d-vr/releases/latest', true);
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Success!
+          var data = JSON.parse(request.responseText);
+          for (var i = 0; i < data.assets.length; i++) {
+            if (data.assets[i].name === "snatch3d-vr-" + data.tag_name + "-windows-x86.zip") {
+              releaseWin32Button = document.getElementById("win32-release");
+              if (releaseWin32Button) {
+                releaseWin32Button.setAttribute("href", data.assets[i].browser_download_url);
+              }
+            } else if (data.assets[i].name === "snatch3d-vr-" + data.tag_name + "-windows-x86_64.zip") {
+              releaseWin64Button = document.getElementById("win64-release");
+              if (releaseWin64Button) {
+                releaseWin64Button.setAttribute("href", data.assets[i].browser_download_url);
+              }
+            } else if (data.assets[i].name === "snatch3d-vr-" + data.tag_name + "-macosx.zip") {
+              releaseMacButton = document.getElementById("mac-release");
+              if (releaseMacButton) {
+                releaseMacButton.setAttribute("href", data.assets[i].browser_download_url);
+              }
+            } else if (data.assets[i].name === "snatch3d-vr-" + data.tag_name + "-linux.zip") {
+              releaseLinButton = document.getElementById("lin-release");
+              if (releaseLinButton) {
+                releaseLinButton.setAttribute("href", data.assets[i].browser_download_url);
+              }
+            } else {
+              console.error("Found unexpected asset: " + data.assets[i]);
+            }
+          }
+        } else {
+          // We reached our target server, but it returned an error
+          console.error(request);
+        }
+      };
+      request.send();
+    </script>
+
     <title>Snatch3d-vr by nicholaschiasson</title>
   </head>
 
@@ -37,6 +77,26 @@
         </section>
 
         <aside id="sidebar">
+          <a id="win32-release" href="https://github.com/nicholaschiasson/snatch3d-vr/releases/latest" class="button">
+            <small>Latest Release</small>
+            windows <small>32-bit</small>
+          </a>
+          <a id="win64-release" href="https://github.com/nicholaschiasson/snatch3d-vr/releases/latest" class="button">
+            <small>Latest Release</small>
+            windows <small>64-bit</small>
+          </a>
+          <a id="mac-release" href="https://github.com/nicholaschiasson/snatch3d-vr/releases/latest" class="button">
+            <small>Latest Release</small>
+            macosx
+          </a>
+          <a id="lin-release" href="https://github.com/nicholaschiasson/snatch3d-vr/releases/latest" class="button">
+            <small>Latest Release</small>
+            linux
+          </a>
+          <a href="https://github.com/nicholaschiasson/snatch3d-vr/releases/latest" class="button">
+            <small>Latest Release</small>
+            notes
+          </a>
           <a href="https://github.com/nicholaschiasson/snatch3d-vr/zipball/master" class="button">
             <small>Download Source</small>
             .zip file
