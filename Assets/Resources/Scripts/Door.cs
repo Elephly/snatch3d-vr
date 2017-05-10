@@ -79,9 +79,12 @@ public class Door : Obstruction, IInteractive
 		{
 			if (IsDoorOpen)
 			{
-				DoorAnimator.Play("DoorCloseAnimation");
-				doorAudioSource.gainDb = 6.0f;
-				doorAudioSource.PlayOneShot(doorOpenCloseAudioClip);
+                if (!LevelManager.CurrentLevel.SpaceOccupiedByPlayer(TransformCached.position))
+                {
+                    DoorAnimator.Play("DoorCloseAnimation");
+                    doorAudioSource.gainDb = 6.0f;
+                    doorAudioSource.PlayOneShot(doorOpenCloseAudioClip);
+                }
 			}
 			else {
 				if (!IsLocked)

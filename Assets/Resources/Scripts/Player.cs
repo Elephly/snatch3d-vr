@@ -43,6 +43,8 @@ public abstract class Player : AbstractGameObject
 	{
 		if (!mainPlayerCaught)
 		{
+            Vector3 preUpdatePosition = TransformCached.position;
+
 			if (this == MainPlayer && MainPlayerDetectionCount > 0)
 			{
 				HandleDetection();
@@ -61,6 +63,8 @@ public abstract class Player : AbstractGameObject
 			}
 
 			TransformCached.position += Velocity;
+
+            LevelManager.CurrentLevel.UpdatePlayerLocation(this, preUpdatePosition, TransformCached.position);
 		}
 	}
 
@@ -75,16 +79,16 @@ public abstract class Player : AbstractGameObject
 	public  virtual void SetDestinationTarget(DestinationTarget destinationTarget)
 	{
 		List<Vector3> path = PathFinder.Dijkstra(LevelManager.CurrentLevel, TransformCached.position, LevelManager.LevelGridCoords(destinationTarget.Destination));
-		path.Add(TransformCached.position);
-		path = PathFinder.SmoothenPath(path);
-		path[0] = destinationTarget.Destination;
-		Destination = TransformCached.position;
-		NextDestinations.Clear();
-		foreach (Vector3 point in path)
-		{
-			NextDestinations.Push(point);
-		}
-		Target = destinationTarget.Target;
+        path.Add(TransformCached.position);
+        path = PathFinder.SmoothenPath(path);
+        path[0] = destinationTarget.Destination;
+        Destination = TransformCached.position;
+        NextDestinations.Clear();
+        foreach (Vector3 point in path)
+        {
+            NextDestinations.Push(point);
+        }
+        Target = destinationTarget.Target;
 	}
 
 	protected virtual void DestinationReached()

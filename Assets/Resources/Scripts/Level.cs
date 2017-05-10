@@ -15,6 +15,7 @@ public class Level
 	public Dictionary<char, LightSwitch> LightSourceMap { get; set; }
 	public Dictionary<char, List<ILightSourceListener>> LightSourceListenerMap { get; set; }
 	public Dictionary<Vector3, Obstruction> ObstructionMap { get; set; }
+    public Dictionary<Vector3, int> SpacePlayerOccupations { get; set; }
 
 	public Level(float levelScale)
 	{
@@ -26,6 +27,7 @@ public class Level
 		LightSourceMap = new Dictionary<char, LightSwitch>();
 		LightSourceListenerMap = new Dictionary<char, List<ILightSourceListener>>();
 		ObstructionMap = new Dictionary<Vector3, Obstruction>();
+        SpacePlayerOccupations = new Dictionary<Vector3, int>();
 	}
 
 	public void Destroy()
@@ -57,6 +59,8 @@ public class Level
 		LightSourceListenerMap.Clear();
 
 		ObstructionMap.Clear();
+
+        SpacePlayerOccupations.Clear();
     }
 
 	public void AddRow(List<AbstractGameObject> row)
@@ -108,4 +112,21 @@ public class Level
 			}
 		}
 	}
+
+    public bool SpaceOccupiedByPlayer(Vector3 location)
+    {
+        Vector2 loc = new Vector2(Mathf.Round(location.x / LevelScale), Mathf.Round(location.z / LevelScale));
+        return SpacePlayerOccupations.ContainsKey(loc) && SpacePlayerOccupations[loc] > 0;
+    }
+
+    public void UpdatePlayerLocation(Player player, Vector3 oldPosition, Vector3 newPosition)
+    {
+        Vector2 oldPos = new Vector2(Mathf.Round(oldPosition.x / LevelScale), Mathf.Round(oldPosition.z / LevelScale));
+        Vector2 newPos = new Vector2(Mathf.Round(newPosition.x / LevelScale), Mathf.Round(newPosition.z / LevelScale));
+        if (SpacePlayerOccupations.ContainsKey(oldPos))
+            SpacePlayerOccupations[oldPos] = Mathf.Max(SpacePlayerOccupations[oldPos] - 1, 0);
+        if (!SpacePlayerOccupations.ContainsKey(newPos))
+            SpacePlayerOccupations[newPos] = 0;
+        SpacePlayerOccupations[newPos]++;
+    }
 }

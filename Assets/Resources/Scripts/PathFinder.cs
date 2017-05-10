@@ -52,38 +52,41 @@ public static class PathFinder
 		foreach (var row in level.LevelGrid)
 		{
 			foreach (var tile in row)
-			{
-				Vector3 tilePosition = tile.TransformCached.position;
-				Vector3 tileForwardPosition = tilePosition + new Vector3(0.0f, 0.0f, level.LevelScale);
-				Vector3 tileBackwardPosition = tilePosition + new Vector3(0.0f, 0.0f, -level.LevelScale);
-				Vector3 tileLeftPosition = tilePosition + new Vector3(-level.LevelScale, 0.0f, 0.0f);
-				Vector3 tileRightPosition = tilePosition + new Vector3(level.LevelScale, 0.0f, 0.0f);
+            {
+                if (tile.tag == "SpaceTile")
+                {
+                    Vector3 tilePosition = tile.TransformCached.position;
+                    Vector3 tileForwardPosition = tilePosition + new Vector3(0.0f, 0.0f, level.LevelScale);
+                    Vector3 tileBackwardPosition = tilePosition + new Vector3(0.0f, 0.0f, -level.LevelScale);
+                    Vector3 tileLeftPosition = tilePosition + new Vector3(-level.LevelScale, 0.0f, 0.0f);
+                    Vector3 tileRightPosition = tilePosition + new Vector3(level.LevelScale, 0.0f, 0.0f);
 
-				if (positionObjectMap.ContainsKey(tileForwardPosition))
-				{
-					if (!edges.ContainsKey(tilePosition))
-						edges[tilePosition] = new List<Vector3>();
-					edges[tilePosition].Add(tileForwardPosition);
-				}
-				if (positionObjectMap.ContainsKey(tileBackwardPosition))
-				{
-					if (!edges.ContainsKey(tilePosition))
-						edges[tilePosition] = new List<Vector3>();
-					edges[tilePosition].Add(tileBackwardPosition);
-				}
-				if (positionObjectMap.ContainsKey(tileLeftPosition))
-				{
-					if (!edges.ContainsKey(tilePosition))
-						edges[tilePosition] = new List<Vector3>();
-					edges[tilePosition].Add(tileLeftPosition);
-				}
-				if (positionObjectMap.ContainsKey(tileRightPosition))
-				{
-					if (!edges.ContainsKey(tilePosition))
-						edges[tilePosition] = new List<Vector3>();
-					edges[tilePosition].Add(tileRightPosition);
-				}
-			}
+                    if (positionObjectMap.ContainsKey(tileForwardPosition))
+                    {
+                        if (!edges.ContainsKey(tilePosition))
+                            edges[tilePosition] = new List<Vector3>();
+                        edges[tilePosition].Add(tileForwardPosition);
+                    }
+                    if (positionObjectMap.ContainsKey(tileBackwardPosition))
+                    {
+                        if (!edges.ContainsKey(tilePosition))
+                            edges[tilePosition] = new List<Vector3>();
+                        edges[tilePosition].Add(tileBackwardPosition);
+                    }
+                    if (positionObjectMap.ContainsKey(tileLeftPosition))
+                    {
+                        if (!edges.ContainsKey(tilePosition))
+                            edges[tilePosition] = new List<Vector3>();
+                        edges[tilePosition].Add(tileLeftPosition);
+                    }
+                    if (positionObjectMap.ContainsKey(tileRightPosition))
+                    {
+                        if (!edges.ContainsKey(tilePosition))
+                            edges[tilePosition] = new List<Vector3>();
+                        edges[tilePosition].Add(tileRightPosition);
+                    }
+                }
+            }
 		}
 
 		distances[orig] = 0.0f;
