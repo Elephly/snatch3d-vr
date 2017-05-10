@@ -43,7 +43,8 @@ public static class PathFinder
 					positionObjectMap[tile.TransformCached.position] = tile;
 					distances[tile.TransformCached.position] = float.PositiveInfinity;
 					previousPositions[tile.TransformCached.position] = null;
-					queue[float.PositiveInfinity] = new List<Vector3>();
+                    if (!queue.ContainsKey(float.PositiveInfinity))
+					    queue[float.PositiveInfinity] = new List<Vector3>();
 					queue[float.PositiveInfinity].Add(tile.TransformCached.position);
 				}
 			}

@@ -258,7 +258,7 @@ public static class LevelManager
 	public static Vector3 LevelGridCoords(Vector3 coords)
 	{
 		Vector3 unscaledCoords = coords / LevelScale;
-		return new Vector3((int)unscaledCoords.x, (int)unscaledCoords.y, (int)unscaledCoords.z) * LevelScale;
+		return new Vector3(Mathf.Round(unscaledCoords.x), Mathf.Round(unscaledCoords.y), Mathf.Round(unscaledCoords.z)) * LevelScale;
 	}
 }
 

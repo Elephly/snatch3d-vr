@@ -79,16 +79,21 @@ public abstract class Player : AbstractGameObject
 	public  virtual void SetDestinationTarget(DestinationTarget destinationTarget)
 	{
 		List<Vector3> path = PathFinder.Dijkstra(LevelManager.CurrentLevel, TransformCached.position, LevelManager.LevelGridCoords(destinationTarget.Destination));
-        path.Add(TransformCached.position);
-        path = PathFinder.SmoothenPath(path);
-        path[0] = destinationTarget.Destination;
-        Destination = TransformCached.position;
-        NextDestinations.Clear();
-        foreach (Vector3 point in path)
+        if (path.Count < 1)
+            HandleNoPathToDestination();
+        else
         {
-            NextDestinations.Push(point);
+            path.Add(TransformCached.position);
+            path = PathFinder.SmoothenPath(path);
+            path[0] = destinationTarget.Destination;
+            Destination = TransformCached.position;
+            NextDestinations.Clear();
+            foreach (Vector3 point in path)
+            {
+                NextDestinations.Push(point);
+            }
+            Target = destinationTarget.Target;
         }
-        Target = destinationTarget.Target;
 	}
 
 	protected virtual void DestinationReached()
@@ -126,4 +131,6 @@ public abstract class Player : AbstractGameObject
 	{
 		mainPlayerCaught = true;
 	}
+
+    protected virtual void HandleNoPathToDestination() { }
 }

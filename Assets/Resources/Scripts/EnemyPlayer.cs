@@ -218,4 +218,12 @@ public class EnemyPlayer : Player, ILightSourceListener
 	protected override void OnBecomeUndetected() { }
 
 	protected override void HandleDetection() { }
+
+    protected override void HandleNoPathToDestination()
+    {
+        base.HandleNoPathToDestination();
+        Player.NotDetectingMainPlayer();
+        VisitNextPatrolPathDestination();
+        detectingMainPlayer = false;
+    }
 }
