@@ -36,6 +36,7 @@ public class UserPlayer : Player
 	protected override void Awake()
 	{
 		base.Awake();
+        Cursor.lockState = CursorLockMode.Locked;
 		backgroundMusicSource = GetComponent<AudioSource>();
 		soundEffectAudioSource = TransformCached.FindBreadthFirst("SoundEffects").GetComponent<AudioSource>();
 		Transform whiteScreenOverlay = TransformCached.FindBreadthFirst("WhiteScreenOverlay");
@@ -88,6 +89,9 @@ public class UserPlayer : Player
 	protected override void Update()
 	{
 		base.Update();
+
+        if (Input.GetKeyUp(KeyCode.Escape))
+            Application.Quit();
 
 		ScreenOverlayFade(whiteScreenOverlayMaterial, whiteScreenOverlayFadeType, whiteScreenOverlayFadeSpeed);
 		ScreenOverlayFade(blackScreenOverlayMaterial, blackScreenOverlayFadeType, blackScreenOverlayFadeSpeed);

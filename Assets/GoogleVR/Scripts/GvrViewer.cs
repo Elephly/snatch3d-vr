@@ -34,7 +34,7 @@ public class GvrViewer : MonoBehaviour {
   /// The singleton instance of the GvrViewer class.
   public static GvrViewer Instance {
     get {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE
       if (instance == null && !Application.isPlaying) {
         instance = UnityEngine.Object.FindObjectOfType<GvrViewer>();
       }
@@ -68,7 +68,7 @@ public class GvrViewer : MonoBehaviour {
   /// @note Cached for performance.
   public static StereoController Controller {
     get {
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
       Camera camera = Camera.main;
       // Cache for performance, if possible.
       if (camera != currentMainCamera || currentController == null) {
@@ -78,7 +78,7 @@ public class GvrViewer : MonoBehaviour {
       return currentController;
 #else
       return null;
-#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
     }
   }
   private static StereoController currentController;
@@ -90,19 +90,19 @@ public class GvrViewer : MonoBehaviour {
   /// _True_ means to render in stereo, and _false_ means to render in mono.
   public bool VRModeEnabled {
     get {
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
       return vrModeEnabled;
 #else
       return UnityEngine.VR.VRSettings.enabled;
-#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
     }
     set {
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
       if (value != vrModeEnabled && device != null) {
         device.SetVRModeEnabled(value);
       }
       vrModeEnabled = value;
-#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
     }
   }
   [SerializeField]
@@ -135,11 +135,11 @@ public class GvrViewer : MonoBehaviour {
     }
   }
   [SerializeField]
-#if UNITY_HAS_GOOGLEVR && UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_HAS_GOOGLEVR && UNITY_ANDROID && !UNITY_EDITOR && !UNITY_STANDALONE
   private DistortionCorrectionMethod distortionCorrection = DistortionCorrectionMethod.Native;
 #else
   private DistortionCorrectionMethod distortionCorrection = DistortionCorrectionMethod.Unity;
-#endif  // UNITY_HAS_GOOGLEVR && UNITY_ANDROID && !UNITY_EDITOR
+#endif  // UNITY_HAS_GOOGLEVR && UNITY_ANDROID && !UNITY_EDITOR && !UNITY_STANDALONE
 
   /// The native SDK will apply a neck offset to the head tracking, resulting in
   /// a more realistic model of a person's head position.  This control determines
@@ -161,7 +161,7 @@ public class GvrViewer : MonoBehaviour {
   [SerializeField]
   private float neckModelScale = 0.0f;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE
   /// Restores level head tilt in when playing in the Unity Editor after you
   /// release the Ctrl key.
   public bool autoUntiltHead = true;
@@ -282,11 +282,11 @@ public class GvrViewer : MonoBehaviour {
   /// the GVR SDK (5.2, 5.3), or the current VR player is the in-editor emulator.
   public static bool NoNativeGVRSupport {
     get {
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
       return true;
 #else
       return false;
-#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
     }
   }
 
@@ -382,9 +382,9 @@ public class GvrViewer : MonoBehaviour {
         && NativeDistortionCorrectionSupported);
     device.SetNeckModelScale(neckModelScale);
 
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
     device.SetVRModeEnabled(vrModeEnabled);
-#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
 
     device.UpdateScreenData();
   }
@@ -415,7 +415,7 @@ public class GvrViewer : MonoBehaviour {
 // - In-editor emulator when the current platform is Android or iOS.
 //   Since GVR is the only valid VR SDK on Android or iOS, this prevents it from
 //   interfering with VR SDKs on other platforms.
-#if !UNITY_HAS_GOOGLEVR || (UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS))
+#if !UNITY_HAS_GOOGLEVR || (UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)) || UNITY_STANDALONE
       AddPrePostRenderStages();
 #endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
   }
@@ -426,12 +426,12 @@ public class GvrViewer : MonoBehaviour {
 // - In-editor emulator when the current platform is Android or iOS.
 //   Since GVR is the only valid VR SDK on Android or iOS, this prevents it from
 //   interfering with VR SDKs on other platforms.
-#if !UNITY_HAS_GOOGLEVR || (UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS))
+#if !UNITY_HAS_GOOGLEVR || (UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)) || UNITY_STANDALONE
       AddStereoControllerToCameras();
 #endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
   }
 
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
   void AddPrePostRenderStages() {
     var preRender = UnityEngine.Object.FindObjectOfType<GvrPreRender>();
     if (preRender == null) {
@@ -446,7 +446,7 @@ public class GvrViewer : MonoBehaviour {
       go.transform.parent = transform;
     }
   }
-#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
 
   /// Whether the viewer's trigger was pulled. True for exactly one complete frame
   /// after each pull.
@@ -499,9 +499,9 @@ public class GvrViewer : MonoBehaviour {
   private void DispatchEvents() {
       // Update flags first by copying from device and other inputs.
     Triggered = Input.GetMouseButtonDown(0);
-#if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
+#if UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR || UNITY_STANDALONE)
     Triggered |= GvrController.ClickButtonDown;
-#endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR)
+#endif  // UNITY_HAS_GOOGLEVR && (UNITY_ANDROID || UNITY_EDITOR || UNITY_STANDALONE)
 
     Tilted = device.tilted;
     ProfileChanged = device.profileChanged;
@@ -531,7 +531,7 @@ public class GvrViewer : MonoBehaviour {
     device.ShowSettingsDialog();
   }
 
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
   /// Add a StereoController to any camera that does not have a Render Texture (meaning it is
   /// rendering to the screen).
   public static void AddStereoControllerToCameras() {
@@ -547,10 +547,10 @@ public class GvrViewer : MonoBehaviour {
       }
     }
   }
-#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
 
   void OnEnable() {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE
     // This can happen if you edit code while the editor is in Play mode.
     if (device == null) {
       InitDevice();
@@ -576,9 +576,9 @@ public class GvrViewer : MonoBehaviour {
   }
 
   void OnDestroy() {
-#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#if !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
     VRModeEnabled = false;
-#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR
+#endif  // !UNITY_HAS_GOOGLEVR || UNITY_EDITOR || UNITY_STANDALONE
     if (device != null) {
       device.Destroy();
     }

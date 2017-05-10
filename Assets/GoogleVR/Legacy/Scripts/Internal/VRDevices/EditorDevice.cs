@@ -67,7 +67,11 @@ namespace Gvr.Internal {
         rot = Quaternion.Euler(90, 0, 0) * att;
       } else {
         bool rolled = false;
-        if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) {
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) {
+            rolled = true;
+            mouseZ += Input.GetAxis("Mouse X") * 5;
+            mouseZ = Mathf.Clamp(mouseZ, -85, 85);
+        } else {
           mouseX += Input.GetAxis("Mouse X") * 5;
           if (mouseX <= -180) {
             mouseX += 360;
@@ -76,10 +80,6 @@ namespace Gvr.Internal {
           }
           mouseY -= Input.GetAxis("Mouse Y") * 2.4f;
           mouseY = Mathf.Clamp(mouseY, -85, 85);
-        } else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) {
-          rolled = true;
-          mouseZ += Input.GetAxis("Mouse X") * 5;
-          mouseZ = Mathf.Clamp(mouseZ, -85, 85);
         }
         if (!rolled && GvrViewer.Instance.autoUntiltHead) {
           // People don't usually leave their heads tilted to one side for long.

@@ -237,6 +237,8 @@ namespace Gvr.Internal {
     #endif  // UNITY_HAS_GOOGLEVR
 #elif IPHONE_DEVICE
         device = new iOSDevice();
+#elif UNITY_STANDALONE
+        device = new StandaloneDevice();
 #else
         throw new InvalidOperationException("Unsupported device.");
 #endif  // UNITY_EDITOR
