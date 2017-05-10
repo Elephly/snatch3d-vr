@@ -73,9 +73,9 @@ public class Level
 		LevelGrid[row].Add(value);
 	}
 
-	public Object GetGameObjectAtRowColumnIndex(int row, int column)
+	public AbstractGameObject GetGameObjectAtRowColumnIndex(int row, int column)
 	{
-		Object go = null;
+		AbstractGameObject go = null;
 		int rowCount = LevelGrid.Count;
 
 		if (row >= 0 && column >= 0 && rowCount > row && LevelGrid[rowCount - 1 - row] != null && LevelGrid[rowCount - 1 - row].Count > column)

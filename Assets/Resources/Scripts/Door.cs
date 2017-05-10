@@ -24,7 +24,7 @@ public class Door : Obstruction, IInteractive
 		return !IsDoorOpen;
 	}
 
-	GameObject spaceTile = null;
+	AbstractGameObject spaceTile = null;
 
 	protected override void Awake()
 	{
@@ -36,7 +36,7 @@ public class Door : Obstruction, IInteractive
 
 	void Start()
 	{
-		spaceTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)(TransformCached.position.z / LevelManager.LevelScale), (int)(TransformCached.position.x / LevelManager.LevelScale)) as GameObject;
+		spaceTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)(TransformCached.position.z / LevelManager.LevelScale), (int)(TransformCached.position.x / LevelManager.LevelScale));
 	}
 
 	void Update()
@@ -61,10 +61,10 @@ public class Door : Obstruction, IInteractive
 
 		if (spaceTile != null)
 		{
-			if (IsDoorOpen)
-				spaceTile.tag = "SpaceTile";
-			else
-				spaceTile.tag = "WallTile";
+            if (IsDoorOpen)
+                spaceTile.tag = "SpaceTile";
+            else
+                spaceTile.tag = "WallTile";
 		}
 	}
 
