@@ -1,199 +1,201 @@
 ﻿{
-	"Grid": [
-		"WWWWWWWWWWWW",
-		"WFFFFWFFFdGW",
-		"WFWWFWFWFWWW",
-		"WFFFFWFWFFFW",
-		"WWWWFWFWFWWW",
-		"WFFWFFFdFFFW",
-		"WFWWWWWWDWWW",
-		"WFFFFFFdFFFW",
-		"WFFFFWFWWFWW",
-		"WFFWFFFWFFFW",
-		"W^FWFWFWWWFW",
-		"WWWWWWWWWWWW"
-	],
-	"LightSourceMap": [
-		"------------",
-		"-3333-33334-",
-		"-3--3-3-3---",
-		"-3333-3-333-",
-		"----3-3-3---",
-		"-11-3333333-",
-		"-1------2---",
-		"-1111111222-",
-		"-1111-1--2--",
-		"-11-111-222-",
-		"-11-1-1---2-",
-		"------------"
-	],
-	"LightSwitches": [
-		{
-			"LightSource": "1",
-			"Position": {
-				"X": 2,
-				"Y": 6
-			},
-			"Yaw": -90
-		},
-		{
-			"LightSource": "2",
-			"Position": {
-				"X": 10,
-				"Y": 4
-			},
-			"Yaw": -90
-		},
-		{
-			"LightSource": "3",
-			"Position": {
-				"X": 10,
-				"Y": 8
-			},
-			"Yaw": -90
-		}
-	],
-    "DoorUnlockSwitches": [
+  "Grid": [
+    "WWWWWWWWWWWW",
+    "WFFFFWFFFdGW",
+    "WFWWFWFWFWWW",
+    "WFFFFWFWFFFW",
+    "WWWWFWFWFWWW",
+    "WFFWFFFdFFFW",
+    "WFWWWWWWDWWW",
+    "WFFFFFFdFFFW",
+    "WFFFFWFWWFWW",
+    "WFFWFFFWFFFW",
+    "W^FWFWFWWWFW",
+    "WWWWWWWWWWFW",
+    "WWWWWWWWWWWW"
+  ],
+  "LightSourceMap": [
+    "------------",
+    "-3333-33334-",
+    "-3--3-3-3---",
+    "-3333-3-333-",
+    "----3-3-3---",
+    "-11-3333333-",
+    "-1------2---",
+    "-1111111222-",
+    "-1111-1--2--",
+    "-11-111-222-",
+    "-11-1-1---2-",
+    "----------2-",
+    "------------"
+  ],
+  "LightSwitches": [
+    {
+      "LightSource": "1",
+      "Position": {
+        "X": 2,
+        "Y": 7
+      },
+      "Yaw": -90
+    },
+    {
+      "LightSource": "2",
+      "Position": {
+        "X": 10,
+        "Y": 5
+      },
+      "Yaw": -90
+    },
+    {
+      "LightSource": "3",
+      "Position": {
+        "X": 10,
+        "Y": 9
+      },
+      "Yaw": -90
+    }
+  ],
+  "DoorUnlockSwitches": [
+    {
+      "DoorPositions": [
         {
-            "DoorPositions": [
-                {
-	                "X": 7,
-	                "Y": 4
-	            }
-            ],
-            "Position": {
-                "X": 6,
-                "Y": 1
-            },
-            "Yaw": 0
-        },
-        {
-            "DoorPositions": [
-                {
-	                "X": 8,
-	                "Y": 5
-	            }
-            ],
-            "Position": {
-                "X": 10,
-                "Y": 1
-            },
-            "Yaw": 0
-        },
-        {
-            "DoorPositions": [
-                {
-	                "X": 7,
-	                "Y": 6
-	            },
-                {
-                    "X": 9,
-                    "Y": 10
-                }
-            ],
-            "Position": {
-                "X": 1,
-                "Y": 10
-            },
-            "Yaw": 90
-        },
-    ],
-    "Enemies": [
-        {
-            "LightSource": "-",
-            "PatrolPath": [
-                {
-                    "X": 1,
-                    "Y": 8
-                },
-                {
-                    "X": 1,
-                    "Y": 10
-                },
-                {
-                    "X": 4,
-                    "Y": 10
-                },
-                {
-                    "X": 4,
-                    "Y": 8
-                }
-            ],
-            "Position": {
-                "X": 1,
-                "Y": 8,
-            },
-            "RestTimeSeconds": 2,
-            "Type": "EasyAngryTuxedoEnemy",
-            "Yaw": 0
-        },
-        {
-            "LightSource": "1",
-            "PatrolPath": [
-                {
-                    "X": 4,
-                    "Y": 2
-                },
-                {
-                    "X": 6,
-                    "Y": 2
-                },
-                {
-                    "X": 6,
-                    "Y": 4
-                },
-                {
-                    "X": 4,
-                    "Y": 4
-                }
-            ],
-            "Position": {
-                "X": 4,
-                "Y": 2,
-            },
-            "RestTimeSeconds": 2,
-            "Type": "EasyAngryTuxedoEnemy",
-            "Yaw": 90
-        },
-        {
-            "LightSource": "2",
-            "PatrolPath": [
-                {
-                    "X": 8,
-                    "Y": 2
-                },
-                {
-                    "X": 10,
-                    "Y": 2
-                }
-            ],
-            "Position": {
-                "X": 8,
-                "Y": 2,
-            },
-            "RestTimeSeconds": 2,
-            "Type": "EasyAngryTuxedoEnemy",
-            "Yaw": 90
-        },
-        {
-            "LightSource": "3",
-            "PatrolPath": [
-                {
-                    "X": 6,
-                    "Y": 9
-                },
-                {
-                    "X": 6,
-                    "Y": 7
-                }
-            ],
-            "Position": {
-                "X": 6,
-                "Y": 9,
-            },
-            "RestTimeSeconds": 2,
-            "Type": "EasyAngryTuxedoEnemy",
-            "Yaw": 180
+          "X": 7,
+          "Y": 8
         }
-    ]
+      ],
+      "Position": {
+        "X": 6,
+        "Y": 2
+      },
+      "Yaw": 0
+    },
+    {
+      "DoorPositions": [
+        {
+          "X": 8,
+          "Y": 6
+        }
+      ],
+      "Position": {
+        "X": 10,
+        "Y": 1
+      },
+      "Yaw": 0
+    },
+    {
+      "DoorPositions": [
+        {
+          "X": 7,
+          "Y": 7
+        },
+        {
+          "X": 9,
+          "Y": 11
+        }
+      ],
+      "Position": {
+        "X": 1,
+        "Y": 11
+      },
+      "Yaw": 90
+    }
+  ],
+  "Enemies": [
+    {
+      "LightSource": "-",
+      "PatrolPath": [
+        {
+          "X": 1,
+          "Y": 9
+        },
+        {
+          "X": 1,
+          "Y": 11
+        },
+        {
+          "X": 4,
+          "Y": 11
+        },
+        {
+          "X": 4,
+          "Y": 9
+        }
+      ],
+      "Position": {
+        "X": 1,
+        "Y": 9
+      },
+      "RestTimeSeconds": 2,
+      "Type": "EasyAngryTuxedoEnemy",
+      "Yaw": 0
+    },
+    {
+      "LightSource": "1",
+      "PatrolPath": [
+        {
+          "X": 4,
+          "Y": 3
+        },
+        {
+          "X": 6,
+          "Y": 3
+        },
+        {
+          "X": 6,
+          "Y": 5
+        },
+        {
+          "X": 4,
+          "Y": 5
+        }
+      ],
+      "Position": {
+        "X": 4,
+        "Y": 3
+      },
+      "RestTimeSeconds": 2,
+      "Type": "EasyAngryTuxedoEnemy",
+      "Yaw": 90
+    },
+    {
+      "LightSource": "2",
+      "PatrolPath": [
+        {
+          "X": 8,
+          "Y": 3
+        },
+        {
+          "X": 10,
+          "Y": 3
+        }
+      ],
+      "Position": {
+        "X": 8,
+        "Y": 3
+      },
+      "RestTimeSeconds": 2,
+      "Type": "EasyAngryTuxedoEnemy",
+      "Yaw": 90
+    },
+    {
+      "LightSource": "3",
+      "PatrolPath": [
+        {
+          "X": 6,
+          "Y": 10
+        },
+        {
+          "X": 6,
+          "Y": 8
+        }
+      ],
+      "Position": {
+        "X": 6,
+        "Y": 10
+      },
+      "RestTimeSeconds": 2,
+      "Type": "EasyAngryTuxedoEnemy",
+      "Yaw": 180
+    }
+  ]
 }
