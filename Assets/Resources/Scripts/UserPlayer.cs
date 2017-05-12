@@ -105,32 +105,29 @@ public class UserPlayer : Player
 			Vector3 playerTileLocation = new Vector3(Mathf.Round(playerTileLocationUnrounded.x), Mathf.Round(playerTileLocationUnrounded.y), Mathf.Round(playerTileLocationUnrounded.z));
 			Vector3 xDirectionTileLocationUnrounded = playerTileLocation + Vector3.Project(Velocity, Vector3.right).normalized;
 			Vector3 xDirectionTileLocation = new Vector3(xDirectionTileLocationUnrounded.x, xDirectionTileLocationUnrounded.y, xDirectionTileLocationUnrounded.z);
-			object xDirectionTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)xDirectionTileLocation.z, (int)xDirectionTileLocation.x);
+			AbstractGameObject xDirectionTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)xDirectionTileLocation.z, (int)xDirectionTileLocation.x);
 			Vector3 zDirectionTileLocationUnrounded = playerTileLocation + Vector3.Project(Velocity, Vector3.forward).normalized;
 			Vector3 zDirectionTileLocation = new Vector3(zDirectionTileLocationUnrounded.x, zDirectionTileLocationUnrounded.y, zDirectionTileLocationUnrounded.z);
-			object zDirectionTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)zDirectionTileLocation.z, (int)zDirectionTileLocation.x);
+            AbstractGameObject zDirectionTile = LevelManager.CurrentLevel.GetGameObjectAtRowColumnIndex((int)zDirectionTileLocation.z, (int)zDirectionTileLocation.x);
 
-			if (xDirectionTile is GameObject && !(xDirectionTile as GameObject).CompareTag("SpaceTile") &&
-				Vector3.Project((xDirectionTile as GameObject).transform.position - TransformCached.position, Vector3.right).sqrMagnitude <=
+			if (xDirectionTile != null && !xDirectionTile.CompareTag("SpaceTile") &&
+				Vector3.Project(xDirectionTile.TransformCached.position - TransformCached.position, Vector3.right).sqrMagnitude <=
 				Mathf.Pow(LevelManager.LevelScale, 2))
 			{
-                //GameObject xTileGO = xDirectionTile as GameObject;
-                //float repelX = (xTileGO.transform.position - (Vector3.Project(xTileGO.transform.position - TransformCached.position, Vector3.right).normalized * LevelManager.LevelScale)).x;
-                //TransformCached.position = new Vector3(repelX, TransformCached.position.y, TransformCached.position.z);
-                Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.right);
+                Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.right).normalized * Velocity.magnitude;
 			}
 
-			if (zDirectionTile is GameObject && !(zDirectionTile as GameObject).CompareTag("SpaceTile") &&
-				Vector3.Project((zDirectionTile as GameObject).transform.position - TransformCached.position, Vector3.forward).sqrMagnitude <=
+			if (zDirectionTile != null && !zDirectionTile.CompareTag("SpaceTile") &&
+				Vector3.Project(zDirectionTile.TransformCached.position - TransformCached.position, Vector3.forward).sqrMagnitude <=
 				Mathf.Pow(LevelManager.LevelScale, 2))
 			{
-                //GameObject zTileGO = zDirectionTile as GameObject;
-                //float repelZ = (zTileGO.transform.position - (Vector3.Project(zTileGO.transform.position - TransformCached.position, Vector3.forward).normalized * LevelManager.LevelScale)).z;
-                //TransformCached.position = new Vector3(TransformCached.position.x, TransformCached.position.y, repelZ);
-                Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.forward);
+                Velocity = Vector3.ProjectOnPlane(Velocity, Vector3.forward).normalized * Velocity.magnitude;
 			}
 
-			if ((Destination - TransformCached.position).sqrMagnitude <= Mathf.Pow(0.725f * LevelManager.LevelScale, 2))
+            Vector3 destDiff = Destination - TransformCached.position;
+			if ((Destination - TransformCached.position).sqrMagnitude <= Velocity.sqrMagnitude ||
+                ((Destination - TransformCached.position).sqrMagnitude <= 0.75f * LevelManager.LevelScale &&
+                Vector2.Dot(new Vector2(destDiff.x, destDiff.z).normalized, new Vector2(Velocity.x, Velocity.z).normalized) < 0.8f))
 			{
 				DestinationReached();
 				lastFootStepElapsedTimeSeconds = footStepInitialOffset;
