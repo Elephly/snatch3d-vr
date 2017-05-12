@@ -127,7 +127,7 @@ public class UserPlayer : Player
             Vector3 destDiff = Destination - TransformCached.position;
 			if ((Destination - TransformCached.position).sqrMagnitude <= Velocity.sqrMagnitude ||
                 ((Destination - TransformCached.position).sqrMagnitude <= 0.75f * LevelManager.LevelScale &&
-                Vector2.Dot(new Vector2(destDiff.x, destDiff.z).normalized, new Vector2(Velocity.x, Velocity.z).normalized) < 0.8f))
+                Vector2.Dot(new Vector2(destDiff.x, destDiff.z).normalized, new Vector2(Velocity.x, Velocity.z).normalized) <= 0.9f))
 			{
 				DestinationReached();
 				lastFootStepElapsedTimeSeconds = footStepInitialOffset;
